@@ -65,14 +65,26 @@ body {
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 var(--spacing-md);
+    padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1.5rem;
+    }
 }
 
 section {
-    padding: var(--spacing-xl) 0;
+    padding: 5rem 2rem;
     position: relative;
+}
+
+@media (max-width: 768px) {
+    section {
+        padding: 3rem 1.5rem;
+    }
 }
 
 /* ===== Theme Toggle ===== */
@@ -118,12 +130,18 @@ section {
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        padding: 1rem 1.5rem;
+    }
 }
 
 .nav-logo {
@@ -198,17 +216,35 @@ section {
     justify-content: center;
     position: relative;
     background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-    padding-top: 80px;
+    padding: 100px 2rem 2rem 2rem;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        padding: 80px 1.5rem 2rem 1.5rem;
+    }
 }
 
 .hero-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 var(--spacing-md);
+    padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
+}
+
+@media (max-width: 968px) {
+    .hero-container {
+        gap: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-container {
+        gap: 2rem;
+    }
 }
 
 .hero-content {
@@ -366,7 +402,13 @@ section {
 /* ===== Section Titles ===== */
 .section-title {
     text-align: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .section-title {
+        margin-bottom: 3rem;
+    }
 }
 
 .section-title h2 {
