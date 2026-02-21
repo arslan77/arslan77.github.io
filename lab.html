@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lab — Arslan Arshad</title>
+    <meta name="description" content="A collection of experimental portfolio designs by Arslan Arshad.">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── Base ────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #111118;
+            --border: rgba(255, 255, 255, 0.07);
+            --text: #f1f5f9;
+            --muted: #64748b;
+            --accent: #7c3aed;
+            --accent2: #06b6d4;
+            --mono: 'Space Mono', monospace;
+            --sans: 'Space Grotesk', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Noise overlay ───────────────────────────────── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* ── Header ──────────────────────────────────────── */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 80px 60px 0;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent2);
+            margin-bottom: 20px;
+        }
+
+        .header-eyebrow::before {
+            content: '';
+            width: 24px;
+            height: 1px;
+            background: var(--accent2);
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 700;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        h1 em {
+            font-style: normal;
+            background: linear-gradient(120deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-sub {
+            font-size: 1.05rem;
+            color: var(--muted);
+            max-width: 480px;
+            line-height: 1.7;
+        }
+
+        .header-divider {
+            margin: 50px 0 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), transparent);
+        }
+
+        /* ── Main ────────────────────────────────────────── */
+        main {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 60px 100px;
+        }
+
+        /* ── Cards Grid ──────────────────────────────────── */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        /* ── Card ────────────────────────────────────────── */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            animation: cardIn 0.5s ease both;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(124, 58, 237, 0.35);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(124, 58, 237, 0.1);
+        }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:nth-child(1) {
+            animation-delay: 0.0s;
+        }
+
+        .card:nth-child(2) {
+            animation-delay: 0.07s;
+        }
+
+        .card:nth-child(3) {
+            animation-delay: 0.14s;
+        }
+
+        .card:nth-child(4) {
+            animation-delay: 0.21s;
+        }
+
+        .card:nth-child(5) {
+            animation-delay: 0.28s;
+        }
+
+        .card:nth-child(6) {
+            animation-delay: 0.35s;
+        }
+
+        .card:nth-child(7) {
+            animation-delay: 0.42s;
+        }
+
+        /* Card Preview */
+        .card-preview {
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+        }
+
+        .card-preview::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 40%, var(--surface));
+        }
+
+        /* Individual preview gradients */
+        .preview-webgl {
+            background: linear-gradient(135deg, #0d0014 0%, #1a0050 40%, #06001a 70%, #001a1a 100%);
+        }
+
+        .preview-vscode {
+            background: linear-gradient(135deg, #1e1e1e 0%, #252526 50%, #0e639c 100%);
+        }
+
+        .preview-java {
+            background: linear-gradient(135deg, #3a6ea5 0%, #cccccc 50%, #3a4a63 100%);
+        }
+
+        .preview-threejs {
+            background: linear-gradient(135deg, #050505 0%, #0a0a1a 40%, #001133 100%);
+        }
+
+        .preview-glass {
+            background: linear-gradient(135deg, #0f0020 0%, #1a003a 40%, #004455 100%);
+        }
+
+        .preview-neon {
+            background: linear-gradient(135deg, #000011 0%, #11002a 50%, #001a11 100%);
+        }
+
+        .preview-cyberpunk {
+            background: linear-gradient(135deg, #0d000d 0%, #1a0033 50%, #001a1a 100%);
+        }
+
+        /* Floating dots in preview */
+        .card-preview .dots {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+        }
+
+        /* Card Body */
+        .card-body {
+            padding: 24px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-num {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            flex: 1;
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-family: var(--mono);
+            letter-spacing: 0.5px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+        }
+
+        /* CTA */
+        .card-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .open-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 22px;
+            background: linear-gradient(135deg, var(--accent), #a855f7);
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.25s;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .open-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(124, 58, 237, 0.6);
+        }
+
+        .card-type {
+            font-family: var(--mono);
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        /* ── Footer ──────────────────────────────────────── */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: var(--accent2);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Responsive ──────────────────────────────────── */
+        @media (max-width: 768px) {
+
+            header,
+            main {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+
+            header {
+                padding-top: 50px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-eyebrow">arslan arshad / experiments</div>
+        <h1>The <em>Lab</em></h1>
+        <p class="header-sub">A collection of experimental portfolio designs — each one a different aesthetic,
+            framework, or visual idea.</p>
+        <div class="header-divider"></div>
+    </header>
+
+    <main>
+        <div class="grid">
+
+            <!-- WebGL -->
+            <div class="card">
+                <div class="card-preview preview-webgl">
+                    <div class="dots"></div>
+                    🌌
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 01</div>
+                    <div class="card-title">Galaxy · WebGL</div>
+                    <div class="card-desc">7,000-particle spiral galaxy with mouse parallax, scroll-driven camera drift,
+                        and additive blending glow.</div>
+                    <div class="tags">
+                        <span class="tag">Three.js</span>
+                        <span class="tag">WebGL</span>
+                        <span class="tag">Particle System</span>
+                        <span class="tag">GLSL</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="webgl.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">webgl.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VS Code -->
+            <div class="card">
+                <div class="card-preview preview-vscode">
+                    <div class="dots"></div>
+                    📝
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 02</div>
+                    <div class="card-title">Code Editor · VS Code</div>
+                    <div class="card-desc">Interactive IDE simulation. Resume content presented as Go, JSON, YAML and
+                        TypeScript files with real Prism.js syntax highlighting.</div>
+                    <div class="tags">
+                        <span class="tag">Prism.js</span>
+                        <span class="tag">VS Code UI</span>
+                        <span class="tag">Go</span>
+                        <span class="tag">TypeScript</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="vscode.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">vscode.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Java -->
+            <div class="card">
+                <div class="card-preview preview-java">
+                    <div class="dots"></div>
+                    ☕
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 03</div>
+                    <div class="card-title">Swing App · Java</div>
+                    <div class="card-desc">A draggable JFrame window with Metal Look & Feel. JTable for experience,
+                        JProgressBar for skills, and a live console output panel.</div>
+                    <div class="tags">
+                        <span class="tag">Java Swing</span>
+                        <span class="tag">Metal L&F</span>
+                        <span class="tag">JFrame</span>
+                        <span class="tag">Retro</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="java.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">java.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Three.js Network -->
+            <div class="card">
+                <div class="card-preview preview-threejs">
+                    <div class="dots"></div>
+                    🕸️
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 04</div>
+                    <div class="card-title">Network · Three.js</div>
+                    <div class="card-desc">3D microservices network HUD. Rotating node graph with data connections,
+                        terminal overlays, and a system architect aesthetic.</div>
+                    <div class="tags">
+                        <span class="tag">Three.js</span>
+                        <span class="tag">WebGL</span>
+                        <span class="tag">HUD</span>
+                        <span class="tag">Sci-Fi</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="threejs.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">threejs.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Glass / Aurora -->
+            <div class="card">
+                <div class="card-preview preview-glass">
+                    <div class="dots"></div>
+                    🔮
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 05</div>
+                    <div class="card-title">Aurora · Glassmorphism</div>
+                    <div class="card-desc">Holographic glass aesthetic with animated glowing orbs, frosted-glass panels,
+                        3D tilt cards, and a CSS mesh gradient background.</div>
+                    <div class="tags">
+                        <span class="tag">Glassmorphism</span>
+                        <span class="tag">CSS Aurora</span>
+                        <span class="tag">3D Tilt</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="glass.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">glass.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Neon -->
+            <div class="card">
+                <div class="card-preview preview-neon">
+                    <div class="dots"></div>
+                    ⚡
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 06</div>
+                    <div class="card-title">Neon · Retro Glow</div>
+                    <div class="card-desc">Dark retro-neon aesthetic with glowing text, scanline overlays, and neon
+                        pink/green palette. Inspired by 80s synthwave visuals.</div>
+                    <div class="tags">
+                        <span class="tag">Neon CSS</span>
+                        <span class="tag">Retro</span>
+                        <span class="tag">Synthwave</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="neon.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">neon.html</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cyberpunk -->
+            <div class="card">
+                <div class="card-preview preview-cyberpunk">
+                    <div class="dots"></div>
+                    🌆
+                </div>
+                <div class="card-body">
+                    <div class="card-num">// 07</div>
+                    <div class="card-title">Cyberpunk · Dark City</div>
+                    <div class="card-desc">Glitch effects, neon magenta and cyan accents, animated background grid and a
+                        distorted typography style.</div>
+                    <div class="tags">
+                        <span class="tag">Cyberpunk</span>
+                        <span class="tag">Glitch</span>
+                        <span class="tag">CSS Grid</span>
+                    </div>
+                    <div class="card-cta">
+                        <a href="cyberpunk.html" class="open-btn">Open ↗</a>
+                        <span class="card-type">cyberpunk.html</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Built by <a href="index.html">Arslan Arshad</a> · these are design experiments, not the main portfolio</p>
+    </footer>
+
+</body>
+
+</html>
