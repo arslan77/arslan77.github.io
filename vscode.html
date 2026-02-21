@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arslan Arshad | VS Code V7</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fira Code Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Prism.js Theme (VScode Dark) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --bg-dark: #1e1e1e;
+            --sidebar-bg: #252526;
+            --activity-bg: #333333;
+            --tab-bg: #2d2d2d;
+            --tab-active: #1e1e1e;
+            --text-main: #cccccc;
+            --accent: #007acc;
+            --border: #3c3c3c;
+            --line-num: #858585;
+            --status-bar: #007acc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Layout Grid */
+        .app-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Activity Bar (Far Left) */
+        .activity-bar {
+            width: 50px;
+            background: var(--activity-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+            z-index: 10;
+        }
+
+        .activity-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            color: #858585;
+            cursor: pointer;
+            border-left: 2px solid transparent;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+
+        .activity-icon:hover,
+        .activity-icon.active {
+            color: #fff;
+            opacity: 1;
+        }
+
+        .activity-icon.active {
+            border-left-color: #fff;
+        }
+
+        /* Sidebar (Explorer) */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--bg-dark);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 10px 20px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #bbb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .explorer-item {
+            padding: 4px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--text-main);
+            gap: 8px;
+            border-left: 2px solid transparent;
+        }
+
+        .explorer-item:hover {
+            background: #2a2d2e;
+        }
+
+        .explorer-item.active {
+            background: #37373d;
+            border-left-color: var(--accent);
+        }
+
+        .folder-header {
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: #bbb;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .file-tree {
+            padding-left: 10px;
+        }
+
+        /* Main Editor Area */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-dark);
+            position: relative;
+        }
+
+        /* Tabs */
+        .tabs-bar {
+            height: 35px;
+            background: var(--sidebar-bg);
+            display: flex;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 0 15px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #969696;
+            background: var(--tab-bg);
+            cursor: pointer;
+            border-right: 1px solid #1e1e1e;
+            min-width: 120px;
+            gap: 8px;
+            border-top: 1px solid transparent;
+        }
+
+        .tab.active {
+            background: var(--tab-active);
+            color: #fff;
+            border-top-color: var(--accent);
+        }
+
+        .tab:hover {
+            background: #2d2d2d;
+            color: #fff;
+        }
+
+        .tab-close {
+            margin-left: auto;
+            font-size: 0.7rem;
+            opacity: 0;
+        }
+
+        .tab:hover .tab-close {
+            opacity: 1;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            height: 22px;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            font-size: 0.8rem;
+            color: #aaa;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Code Viewer */
+        .code-container {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+            font-size: 14px;
+            position: relative;
+        }
+
+        pre {
+            margin: 0 !important;
+            background: transparent !important;
+            text-shadow: none !important;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace !important;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 22px;
+            background: var(--status-bar);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            font-size: 0.75rem;
+            z-index: 10;
+        }
+
+        .status-left,
+        .status-right {
+            display: flex;
+            gap: 15px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        /* Terminal (Bottom Panel) */
+        .terminal-panel {
+            height: 150px;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            height: 30px;
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #aaa;
+        }
+
+        .term-tab {
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .term-tab.active {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .terminal-content {
+            padding: 10px 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: #cccccc;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Utilities */
+        .hidden {
+            display: none !important;
+        }
+
+        .icon-go {
+            color: #00add8;
+        }
+
+        .icon-json {
+            color: #f1e05a;
+        }
+
+        .icon-yaml {
+            color: #cb171e;
+        }
+
+        .icon-ts {
+            color: #3178c6;
+        }
+
+        .icon-md {
+            color: #dddddd;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                z-index: 20;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+            }
+
+            .sidebar.open {
+                transform: translateX(50px);
+            }
+
+            .activity-bar {
+                z-index: 30;
+            }
+
+            .terminal-panel {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Activity Bar -->
+        <div class="activity-bar">
+            <div class="activity-icon active" id="act-files"><i class="far fa-copy"></i></div>
+            <div class="activity-icon"><i class="fas fa-search"></i></div>
+            <div class="activity-icon"><i class="fas fa-code-branch"></i></div>
+            <div class="activity-icon"><i class="fas fa-bug"></i></div>
+            <div class="activity-icon" style="margin-top: auto; margin-bottom: 10px;"><i class="fas fa-cog"></i></div>
+        </div>
+
+        <!-- Sidebar Explorer -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span>Explorer</span>
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="folder-header"><i class="fas fa-chevron-down"></i> PORTFOLIO-V7</div>
+            <div class="file-tree">
+
+                <div class="folder-header"><i class="fas fa-chevron-down"></i> src</div>
+                <div class="file-tree">
+                    <div class="explorer-item active" data-file="main.go" onclick="openFile('main.go')">
+                        <i class="fab fa-golang icon-go"></i> main.go
+                    </div>
+                    <div class="explorer-item" data-file="about.go" onclick="openFile('about.go')">
+                        <i class="fab fa-golang icon-go"></i> about.go
+                    </div>
+                </div>
+
+                <div class="folder-header"><i class="fas fa-chevron-down"></i> data</div>
+                <div class="file-tree">
+                    <div class="explorer-item" data-file="experience.json" onclick="openFile('experience.json')">
+                        <i class="fas fa-brackets-curly icon-json"></i> experience.json
+                    </div>
+                    <div class="explorer-item" data-file="skills.yaml" onclick="openFile('skills.yaml')">
+                        <i class="fas fa-info-circle icon-yaml"></i> skills.yaml
+                    </div>
+                    <div class="explorer-item" data-file="projects.ts" onclick="openFile('projects.ts')">
+                        <i class="fab fa-js icon-ts"></i> projects.ts
+                    </div>
+                </div>
+
+                <div class="explorer-item" data-file="README.md" onclick="openFile('README.md')">
+                    <i class="fab fa-markdown icon-md"></i> README.md
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Editor -->
+        <div class="editor-area">
+
+            <!-- Tabs -->
+            <div class="tabs-bar" id="tabs-container">
+                <div class="tab active" data-file="main.go">
+                    <i class="fab fa-golang icon-go"></i> main.go <span class="tab-close"><i
+                            class="fas fa-times"></i></span>
+                </div>
+                <!-- More tabs dynamically added -->
+            </div>
+
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs" id="breadcrumbs">portfolio > src > main.go</div>
+
+            <!-- Code Content -->
+            <!-- Code Content -->
+            <div id="code-main.go" class="code-container">
+                <pre><code class="language-go">package main
+
+import (
+    "fmt"
+    "portfolio/src"
+)
+
+// Welcome to my V7 Portfolio
+// Interactive IDE Theme
+func main() {
+    engineer := src.NewEngineer(
+        "Arslan Arshad", 
+        "Senior Software Engineer",
+    )
+
+    fmt.Printf("Hello! I am %s\n", engineer.Name)
+    fmt.Println("Architecting scalable microservices & distributed systems.")
+    fmt.Println("Check out the file explorer to see my source code.")
+
+    // TODO: Hire this engineer
+    engineer.Connect("arslanarshad07@gmail.com")
+}
+</code></pre>
+            </div>
+
+            <div id="code-about.go" class="code-container hidden">
+                <pre><code class="language-go">package src
+
+// Engineer represents a software professional
+type Engineer struct {
+    Name      string
+    Role      string
+    Location  string
+    Education string
+    Focus     []string
+}
+
+// GetProfile returns the detailed bio
+func GetProfile() Engineer {
+    return Engineer{
+        Name:     "Arslan Arshad",
+        Role:     "Senior Software Engineer",
+        Location: "Dubai, UAE",
+        Education: "MS Computer Science (NUST SEECS)",
+        Focus: []string{
+            "Backend Systems",
+            "Microservices",
+            "Cloud Native Architecture",
+            "High Performance APIs",
+        },
+    }
+}
+</code></pre>
+            </div>
+
+            <div id="code-experience.json" class="code-container hidden">
+                <pre><code class="language-json">[
+  {
+    "company": "HungerStation (Delivery Hero)",
+    "role": "Senior Software Engineer",
+    "period": "Oct 2023 - Present",
+    "location": "Dubai, UAE",
+    "stack": ["Go", "gRPC", "Microservices"],
+    "achievements": [
+      "Building integration layer for 50+ partners",
+      "Lead Scheduled Orders initiative",
+      "Optimized Logistics Compliance"
+    ]
+  },
+  {
+    "company": "Careem (Uber)",
+    "role": "Sr. Software Engineer I",
+    "period": "Apr 2022 - Sep 2023",
+    "location": "Lahore, PK",
+    "stack": ["Spring Boot", "Laravel", "Redis"],
+    "achievements": [
+      "Driver Onboarding & Verification",
+      "Gamified Tier System",
+      "Event-driven Architecture"
+    ]
+  },
+  {
+    "company": "LearnOBots",
+    "role": "Lead Software Engineer",
+    "period": "Oct 2018 - Mar 2022",
+    "stack": ["AWS IoT", "Node.js", "React"],
+    "achievements": [
+      "LearnOSTEAM EdTech Platform",
+      "POULTA IoT Platform (500+ devices)"
+    ]
+  }
+]</code></pre>
+            </div>
+
+            <div id="code-skills.yaml" class="code-container hidden">
+                <pre><code class="language-yaml">languages:
+  - Go: 95%
+  - Java: 85%
+  - PHP: 90%
+  - Ruby: 80%
+  - Python: 85%
+  - JavaScript/TypeScript: 88%
+
+frameworks:
+  backend: [Spring Boot, Laravel, Rails, Gin, Fiber, Echo, FastAPI]
+  frontend: [Vue.js, React]
+
+infrastructure:
+  containerization: [Docker, Kubernetes]
+  cloud: [AWS, Google Cloud Platform]
+  iac: [Terraform]
+  messaging: [Kafka, RabbitMQ, Redis]
+
+databases:
+  relational: [PostgreSQL, MySQL]
+  nosql: [MongoDB, Redis, Elasticsearch]
+
+tools:
+  - Git
+  - GitHub Actions
+  - Jenkins
+  - Jira
+  - Postman
+  - Cursor AI
+</code></pre>
+            </div>
+
+            <div id="code-projects.ts" class="code-container hidden">
+                <pre><code class="language-typescript">interface Project {
+    name: string;
+    description: string;
+    techStack: string[];
+    link?: string;
+    status: 'Public' | 'Confidential';
+}
+
+export const projects: Project[] = [
+    {
+        name: "Resume Build System",
+        description: "Automated LaTeX resume generation with Docker & CI/CD",
+        techStack: ["GitHub Actions", "LaTeX", "Docker"],
+        link: "https://github.com/arslan77/resume",
+        status: "Public"
+    },
+    {
+        name: "GunneboBGR Security",
+        description: "Facial recognition for airport security",
+        techStack: ["Python", "TensorFlow", "OpenCV"],
+        status: "Confidential"
+    },
+    {
+        name: "POULTA IoT",
+        description: "IoT platform for poultry farm management",
+        techStack: ["AWS IoT", "Node.js", "MongoDB"],
+        status: "Confidential"
+    },
+    {
+        name: "PingPong Lead Gen",
+        description: "B2B marketing automation platform",
+        techStack: ["Laravel", "Vue.js", "Redis"],
+        status: "Confidential"
+    }
+];
+</code></pre>
+            </div>
+
+            <div id="code-README.md" class="code-container hidden">
+                <pre><code class="language-markdown"># Portfolio V7
+
+Welcome to my interactive portfolio.
+This interface is designed to reflect my daily environment: **Code**.
+
+## Usage
+- Click files in the **Explorer** to navigate.
+- Inspect the source code to learn about my stack.
+- Check the **Terminal** for system status.
+
+## Contact
+- Email: [arslanarshad07@gmail.com](mailto:arslanarshad07@gmail.com)
+- GitHub: [github.com/arslan77](https://github.com/arslan77)
+- LinkedIn: [linkedin.com/in/iamarslan](https://linkedin.com/in/iamarslan)
+
+## Resume
+[Download PDF](https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf)
+</code></pre>
+            </div>
+
+            <!-- Terminal -->
+            <div class="terminal-panel">
+                <div class="terminal-header">
+                    <div class="term-tab">PROBLEMS</div>
+                    <div class="term-tab">OUTPUT</div>
+                    <div class="term-tab">DEBUG CONSOLE</div>
+                    <div class="term-tab active">TERMINAL</div>
+                </div>
+                <div class="terminal-content">
+                    <div style="color: #4CAF50;">➜ portfolio git:(main) <span style="color: #ccc;">go run main.go</span>
+                    </div>
+                    <div style="margin-top: 5px;">Starting server at localhost:8080...</div>
+                    <div>System initialized. User profile loaded successfully.</div>
+                    <div style="margin-top: 5px; color: #00add8;">_</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-item"><i class="fas fa-code-branch"></i> main*</div>
+                <div class="status-item"><i class="fas fa-sync-alt"></i> 0 errors</div>
+            </div>
+            <div class="status-right">
+                <div class="status-item">Ln 1, Col 1</div>
+                <div class="status-item">UTF-8</div>
+                <div class="status-item">Go</div>
+                <div class="status-item"><i class="far fa-bell"></i></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+
+    <!-- JS LOGIC -->
+    <script>
+        // State
+        let openTabs = ['main.go'];
+        let activeFile = 'main.go';
+
+        // Elements
+        const tabsContainer = document.getElementById('tabs-container');
+        const codeContainers = document.querySelectorAll('.code-container');
+        const explorerItems = document.querySelectorAll('.explorer-item');
+        const breadcrumbs = document.getElementById('breadcrumbs');
+
+        // Icons Map
+        const iconMap = {
+            'go': 'fab fa-golang icon-go',
+            'json': 'fas fa-brackets-curly icon-json',
+            'yaml': 'fas fa-info-circle icon-yaml',
+            'ts': 'fab fa-js icon-ts',
+            'md': 'fab fa-markdown icon-md'
+        };
+
+        function getIconClass(filename) {
+            const ext = filename.split('.').pop();
+            return iconMap[ext] || 'fas fa-file';
+        }
+
+        // Open File Logic
+        window.openFile = function (filename) {
+            if (!openTabs.includes(filename)) {
+                openTabs.push(filename);
+                renderTabs();
+            }
+            setActiveFile(filename);
+            updateSidebar(filename);
+        }
+
+        function setActiveFile(filename) {
+            activeFile = filename;
+
+            // Update Tabs UI
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.dataset.file === filename) t.classList.add('active');
+            });
+
+            // Show Content
+            codeContainers.forEach(c => c.classList.add('hidden'));
+            const activeContainer = document.getElementById(`code-${filename}`);
+            if (activeContainer) {
+                activeContainer.classList.remove('hidden');
+                // Trigger Prism highlight again just in case
+                Prism.highlightAll();
+            }
+
+            // Update Breadcrumbs
+            const path = filename === 'README.md' ? 'portfolio' :
+                filename.includes('.') ? getFolder(filename) : 'root';
+            breadcrumbs.textContent = `portfolio > ${path} > ${filename}`;
+        }
+
+        function getFolder(filename) {
+            if (filename.endsWith('.go')) return 'src';
+            if (filename.endsWith('.json') || filename.endsWith('.yaml') || filename.endsWith('.ts')) return 'data';
+            return '';
+        }
+
+        function closeTab(e, filename) {
+            e.stopPropagation();
+            openTabs = openTabs.filter(t => t !== filename);
+            if (activeFile === filename) {
+                // Switch to last tab or empty
+                if (openTabs.length > 0) {
+                    setActiveFile(openTabs[openTabs.length - 1]);
+                } else {
+                    activeFile = null;
+                    codeContainers.forEach(c => c.classList.add('hidden'));
+                    breadcrumbs.textContent = 'portfolio';
+                }
+            }
+            renderTabs();
+        }
+
+        function renderTabs() {
+            tabsContainer.innerHTML = '';
+            openTabs.forEach(file => {
+                const tab = document.createElement('div');
+                tab.className = `tab ${file === activeFile ? 'active' : ''}`;
+                tab.dataset.file = file;
+                tab.onclick = () => setActiveFile(file);
+
+                const iconClass = getIconClass(file);
+
+                tab.innerHTML = `<i class="${iconClass}"></i> ${file} <span class="tab-close"><i class="fas fa-times"></i></span>`;
+
+                tab.querySelector('.tab-close').onclick = (e) => closeTab(e, file);
+
+                tabsContainer.appendChild(tab);
+            });
+        }
+
+        function updateSidebar(filename) {
+            explorerItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.file === filename) item.classList.add('active');
+            });
+        }
+
+        // Mobile Sidebar Toggle
+        document.querySelector('.activity-icon').onclick = () => {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Init
+        renderTabs();
+        // Simulate typing effect for main.go (optional, maybe just show it)
+
+    </script>
+
+</body>
+
+</html>

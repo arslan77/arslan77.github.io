@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arslan Arshad | System Architect | V6</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌐</text></svg>">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00ffd5;
+            --secondary: #0077ff;
+            --alert: #ff2a6d;
+            --bg: #050505;
+            --glass: rgba(0, 15, 30, 0.7);
+            --border: rgba(0, 255, 213, 0.3);
+            --font-ui: 'Rajdhani', sans-serif;
+            --font-code: 'Share Tech Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--primary);
+            font-family: var(--font-ui);
+            overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* HUD Interface */
+        .hud-layer {
+            position: relative;
+            z-index: 2;
+            pointer-events: none;
+            height: 100%;
+            width: 100%;
+        }
+
+        .hud-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            pointer-events: auto;
+        }
+
+        /* Header */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .brand {
+            font-family: var(--font-code);
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .brand span {
+            color: var(--secondary);
+        }
+
+        .sys-status {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.warn {
+            background: var(--alert);
+            box-shadow: 0 0 10px var(--alert);
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Navigation */
+        .nav-menu {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--border);
+            background: var(--glass);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: var(--primary);
+            backdrop-filter: blur(5px);
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .nav-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            position: relative;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 4rem;
+            scrollbar-width: none;
+        }
+
+        .content-area::-webkit-scrollbar {
+            display: none;
+        }
+
+        section {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+            padding-left: 1rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(0, 255, 213, 0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-code);
+            color: var(--secondary);
+            letter-spacing: 1px;
+        }
+
+        /* Hero */
+        .hero-wrapper {
+            max-width: 800px;
+        }
+
+        .glitch {
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            position: relative;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 var(--alert);
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 var(--secondary);
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% {
+                clip: rect(11px, 9999px, 86px, 0);
+            }
+
+            20% {
+                clip: rect(93px, 9999px, 14px, 0);
+            }
+
+            40% {
+                clip: rect(32px, 9999px, 7px, 0);
+            }
+
+            60% {
+                clip: rect(56px, 9999px, 59px, 0);
+            }
+
+            80% {
+                clip: rect(10px, 9999px, 78px, 0);
+            }
+
+            100% {
+                clip: rect(44px, 9999px, 20px, 0);
+            }
+        }
+
+        .typing-container {
+            font-family: var(--font-code);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #fff;
+            min-height: 1.5em;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.5rem;
+            background: var(--primary);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 3rem;
+        }
+
+        .stat-panel {
+            border: 1px solid var(--border);
+            padding: 1rem;
+            background: rgba(0, 255, 213, 0.05);
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-val {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            display: block;
+        }
+
+        .stat-key {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--secondary);
+            text-transform: uppercase;
+        }
+
+        /* Panels Generic */
+        .tech-panel {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+
+        .tech-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            animation: scan 2s infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Timeline */
+        .timeline-entry {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 255, 213, 0.1);
+        }
+
+        .time-col {
+            text-align: right;
+            font-family: var(--font-code);
+            color: var(--secondary);
+        }
+
+        .role-col h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .role-col h4 {
+            color: var(--primary);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .role-col ul li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .role-col ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-family: var(--font-code);
+        }
+
+        /* Grid Systems */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Progress Bars */
+        .bar-container {
+            margin-bottom: 1rem;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+        }
+
+        .bar-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            width: 100%;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0;
+            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Tags */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .tag {
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            padding: 0.2rem 0.6rem;
+            border: 1px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        /* Contact CTA */
+        .cta-box {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .big-btn {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .big-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: var(--primary);
+            z-index: -1;
+            transition: 0.3s;
+        }
+
+        .big-btn:hover {
+            color: var(--bg);
+        }
+
+        .big-btn:hover::before {
+            width: 100%;
+        }
+
+        /* Mobile */
+        @media(max-width: 768px) {
+            .timeline-entry {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .time-col {
+                text-align: left;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                bottom: 0;
+                top: auto;
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                transform: none;
+                background: var(--bg);
+                padding: 10px;
+                border-top: 1px solid var(--border);
+            }
+
+            .content-area {
+                padding-right: 0;
+            }
+
+            .hero-wrapper {
+                padding-top: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- WebGL Container -->
+    <div id="canvas-container"></div>
+
+    <!-- HUD Layer -->
+    <div class="hud-layer">
+        <div class="hud-container">
+
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="brand">ARSLAN <span>//</span> SYSTEM_ARCHITECT</div>
+                <div class="sys-status">
+                    <div class="status-item">
+                        <div class="status-dot"></div><span>ONLINE</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-dot warn"></div><span>CPU_OPT</span>
+                    </div>
+                    <div class="status-item"><span>v6.0.0</span></div>
+                </div>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="content-area" id="scroll-container">
+
+                <!-- Hero -->
+                <section id="home">
+                    <div class="hero-wrapper">
+                        <div class="glitch" data-text="SYSTEM_ONLINE">SYSTEM_ONLINE</div>
+                        <div class="typing-container">
+                            <span id="typed"></span><span class="cursor"></span>
+                        </div>
+                        <p
+                            style="font-size: 1.2rem; line-height: 1.6; color: #ccc; margin-bottom: 2rem; max-width: 600px;">
+                            Initializing connection to Senior Software Engineer. Specializing in high-performance
+                            microservices, distributed systems, and cloud architecture.
+                        </p>
+                        <div class="stats-grid">
+                            <div class="stat-panel">
+                                <span class="stat-val" data-target="8">0</span>
+                                <span class="stat-key">Runtime_Years</span>
+                            </div>
+                            <div class="stat-panel">
+                                <span class="stat-val" data-target="50">0</span>
+                                <span class="stat-key">Modules_Int</span>
+                            </div>
+                            <div class="stat-panel">
+                                <span class="stat-val" data-target="6">0</span>
+                                <span class="stat-key">Nodes_Ops</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- About -->
+                <section id="about">
+                    <div class="section-header">
+                        <h2 class="section-title">System_Core</h2>
+                        <span class="section-subtitle">KERNEL_INFO</span>
+                    </div>
+                    <div class="grid-2">
+                        <div class="tech-panel">
+                            <h3><i class="fas fa-id-card"></i> PROFILER</h3>
+                            <p style="margin-top: 1rem; line-height: 1.6;">
+                                Senior Software Engineer architecting scalable solutions.
+                                Currently optimizing <strong>HungerStation's</strong> integration layer handling
+                                millions of requests.
+                                Specialized in <strong>Microservices</strong>, <strong>Distributed Systems</strong>, and
+                                high-concurrency environments.
+                            </p>
+                        </div>
+                        <div class="tech-panel">
+                            <h3><i class="fas fa-globe"></i> LOCALE</h3>
+                            <p style="margin-top: 1rem;">Dubai, UAE [MEA_REGION]</p>
+                            <hr style="border: 0; border-top: 1px solid var(--border); margin: 1rem 0;">
+                            <h3><i class="fas fa-university"></i> EDUCATION</h3>
+                            <p>MS Computer Science</p>
+                            <small style="color: var(--secondary)">NUST SEECS • CGPA 3.35</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Skills -->
+                <section id="skills">
+                    <div class="section-header">
+                        <h2 class="section-title">Dependencies</h2>
+                        <span class="section-subtitle">INSTALLED_LIBRARIES</span>
+                    </div>
+                    <div class="grid-3">
+                        <div class="tech-panel">
+                            <h3>LANGUAGES</h3>
+                            <div class="tags">
+                                <span class="tag">GO 1.22</span>
+                                <span class="tag">JAVA 21</span>
+                                <span class="tag">PHP 8.2</span>
+                                <span class="tag">RUBY 3.2</span>
+                                <span class="tag">PYTHON 3.11</span>
+                                <span class="tag">JAVASCRIPT</span>
+                            </div>
+                            <div class="bar-container" style="margin-top: 1.5rem;">
+                                <div class="bar-label"><span>GO_PROFICIENCY</span><span>90%</span></div>
+                                <div class="bar-bg">
+                                    <div class="bar-fill" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tech-panel">
+                            <h3>FRAMEWORKS</h3>
+                            <div class="tags">
+                                <span class="tag">SPRING_BOOT</span>
+                                <span class="tag">LARAVEL</span>
+                                <span class="tag">RAILS</span>
+                                <span class="tag">GIN</span>
+                                <span class="tag">ECHO</span>
+                                <span class="tag">FASTAPI</span>
+                            </div>
+                        </div>
+                        <div class="tech-panel">
+                            <h3>INFRASTRUCTURE</h3>
+                            <div class="tags">
+                                <span class="tag">KUBERNETES</span>
+                                <span class="tag">DOCKER</span>
+                                <span class="tag">GCP</span>
+                                <span class="tag">AWS</span>
+                                <span class="tag">TERRAFORM</span>
+                                <span class="tag">GRPC</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Experience -->
+                <section id="experience">
+                    <div class="section-header">
+                        <h2 class="section-title">System_Logs</h2>
+                        <span class="section-subtitle">EXECUTION_HISTORY</span>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div class="time-col">
+                            <span>2023 - NOW</span>
+                            <div style="font-size: 0.8rem; opacity: 0.7;">RUNNING...</div>
+                        </div>
+                        <div class="role-col">
+                            <h3>Senior Software Engineer</h3>
+                            <h4>HungerStation (Delivery Hero)</h4>
+                            <ul>
+                                <li>> Architecting Go microservices for 50+ partner integrations.</li>
+                                <li>> Successfully deployed <strong>Scheduled Orders</strong> logic with gRPC.</li>
+                                <li>> Integrated Logicstics Compliance (Athr/Yakeen) APIs.</li>
+                                <li>> Optimized throughput for high-traffic events (Ramadan).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div class="time-col"><span>2022 - 2023</span></div>
+                        <div class="role-col">
+                            <h3>Sr. Software Engineer I</h3>
+                            <h4>Careem (Uber)</h4>
+                            <ul>
+                                <li>> Developed Driver Onboarding & Verification services.</li>
+                                <li>> Engineered gamified reward system processing high-volume events.</li>
+                                <li>> Implemented event-driven architecture with Redis/Kafka.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-entry">
+                        <div class="time-col"><span>2018 - 2022</span></div>
+                        <div class="role-col">
+                            <h3>Lead Software Engineer</h3>
+                            <h4>LearnOBots</h4>
+                            <ul>
+                                <li>> Built EdTech platform affecting 10k+ students.</li>
+                                <li>> Designed POULTA IoT architecture (AWS Greengrass).</li>
+                                <li>> Managed engineering team with 99.9% system uptime.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Older logs collapsed/summarized for brevity in v6 -->
+                    <div class="tech-panel" style="text-align: center; color: var(--secondary); cursor: pointer;">
+                        [ + ] EXPAND_ARCHIVED_LOGS (Brainyloft, HISDU, TechLeadz)
+                    </div>
+                </section>
+
+                <!-- Projects -->
+                <section id="projects">
+                    <div class="section-header">
+                        <h2 class="section-title">Deployments</h2>
+                        <span class="section-subtitle">ACTIVE_NODES</span>
+                    </div>
+                    <div class="grid-2">
+                        <div class="tech-panel">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>RESUME_GEN</h3>
+                                <span style="color: var(--primary)">v2.1.0</span>
+                            </div>
+                            <p style="margin: 1rem 0; font-size: 0.9rem;">Automated LaTeX resume build system with CI/CD
+                                pipeline.</p>
+                            <div class="tags"><span class="tag">GITHUB_ACTIONS</span><span class="tag">DOCKER</span>
+                            </div>
+                            <a href="https://github.com/arslan77/resume"
+                                style="display: block; margin-top: 1rem; color: var(--secondary);">> ACCESS_SOURCE</a>
+                        </div>
+
+                        <div class="tech-panel">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>AIRPORT_SEC</h3>
+                                <span style="color: var(--alert)">RESTRICTED</span>
+                            </div>
+                            <p style="margin: 1rem 0; font-size: 0.9rem;">Facial recognition system for GunneboBGR.</p>
+                            <div class="tags"><span class="tag">PYTHON</span><span class="tag">TENSORFLOW</span></div>
+                            <span style="display: block; margin-top: 1rem; color: #555;">> ACCESS_DENIED</span>
+                        </div>
+
+                        <div class="tech-panel">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>IOT_NET</h3>
+                                <span style="color: var(--alert)">RESTRICTED</span>
+                            </div>
+                            <p style="margin: 1rem 0; font-size: 0.9rem;">Poultry farm management for 500+ devices.</p>
+                            <div class="tags"><span class="tag">AWS_IOT</span><span class="tag">NODE</span></div>
+                            <span style="display: block; margin-top: 1rem; color: #555;">> ACCESS_DENIED</span>
+                        </div>
+
+                        <div class="tech-panel">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>LEAD_GEN</h3>
+                                <span style="color: var(--alert)">RESTRICTED</span>
+                            </div>
+                            <p style="margin: 1rem 0; font-size: 0.9rem;">B2B marketing automation platform.</p>
+                            <div class="tags"><span class="tag">LARAVEL</span><span class="tag">VUE</span></div>
+                            <span style="display: block; margin-top: 1rem; color: #555;">> ACCESS_DENIED</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Contact -->
+                <section id="contact">
+                    <div class="section-header">
+                        <h2 class="section-title">Establish_Link</h2>
+                        <span class="section-subtitle">P2P_CONNECTION</span>
+                    </div>
+                    <div class="cta-box">
+                        <p style="margin-bottom: 2rem;">Ready to upgrade your engineering team?</p>
+                        <a href="mailto:arslanarshad07@gmail.com" class="big-btn">INITIATE_HANDSHAKE</a>
+                        <br>
+                        <div
+                            style="margin-top: 2rem; display: flex; justify-content: center; gap: 2rem; font-size: 2rem;">
+                            <a href="https://github.com/arslan77" title="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="https://linkedin.com/in/iamarslan" title="LinkedIn"><i
+                                    class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </section>
+
+                <footer
+                    style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); text-align: center; color: var(--secondary); font-size: 0.8rem;">
+                    SYSTEM STATUS: OPTIMAL | 2025 ALL RIGHTS RESERVED
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav Sidebar -->
+    <div class="nav-menu">
+        <a href="#home" class="nav-btn active" title="Home"><i class="fas fa-terminal"></i><span>CMD</span></a>
+        <a href="#about" class="nav-btn" title="About"><i class="fas fa-microchip"></i><span>SYS</span></a>
+        <a href="#skills" class="nav-btn" title="Skills"><i class="fas fa-tools"></i><span>LIB</span></a>
+        <a href="#experience" class="nav-btn" title="Experience"><i class="fas fa-history"></i><span>LOG</span></a>
+        <a href="#projects" class="nav-btn" title="Projects"><i class="fas fa-code-branch"></i><span>DEP</span></a>
+        <a href="#contact" class="nav-btn" title="Contact"><i class="fas fa-satellite-dish"></i><span>COM</span></a>
+    </div>
+    <!-- JS PLACEHOLDER -->
+    <script>
+        // Typing Effect
+        const typeText = [
+            "Initializing System Protocols...",
+            "Loading Modules: [KERNEL, NETWORK, SECURITY]...",
+            "Establishing Secure Uplink...",
+            "System Online. Welcome, User."
+        ];
+        let typeIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typeSpeed = 50;
+        const typedElement = document.getElementById('typed');
+
+        function typeWriter() {
+            const currentText = typeText[typeIndex];
+            if (isDeleting) {
+                typedElement.textContent = currentText.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typedElement.textContent = currentText.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentText.length) {
+                isDeleting = true;
+                setTimeout(typeWriter, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                typeIndex = (typeIndex + 1) % typeText.length;
+                setTimeout(typeWriter, 500);
+            } else {
+                setTimeout(typeWriter, isDeleting ? 30 : 50);
+            }
+        }
+        // Start typing after a delay
+        setTimeout(typeWriter, 1000);
+
+        // Three.js SCENE
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050505, 0.002);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.z = 1000;
+
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // PARTICLES (NODES)
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 2000; // quantity
+        const posArray = new Float32Array(particleCount * 3);
+
+        for (let i = 0; i < particleCount * 3; i++) {
+            // Spread particles in a large sphere
+            posArray[i] = (Math.random() - 0.5) * 2000;
+        }
+
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const material = new THREE.PointsMaterial({
+            size: 3,
+            color: 0x00ffd5,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+        const particlesMesh = new THREE.Points(particleGeometry, material);
+        scene.add(particlesMesh);
+
+        // CONNECTIONS (LINES)
+        // Create random connections mimicking a network
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0077ff, transparent: true, opacity: 0.15 });
+        const lineGeometry = new THREE.BufferGeometry();
+        const linePos = [];
+
+        // Connect some points to create a "web"
+        // Taking a subset of points to connect to avoid clutter
+        for (let i = 0; i < 300; i++) {
+            const x = (Math.random() - 0.5) * 1500;
+            const y = (Math.random() - 0.5) * 1500;
+            const z = (Math.random() - 0.5) * 1500;
+
+            // Connect to a nearby point approx
+            linePos.push(x, y, z);
+            linePos.push(x + (Math.random() - 0.5) * 300, y + (Math.random() - 0.5) * 300, z + (Math.random() - 0.5) * 300);
+        }
+        lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePos, 3));
+        const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+        scene.add(linesMesh);
+
+        // MOUSE INTERACTION
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', onDocumentMouseMove);
+        window.addEventListener('resize', onWindowResize);
+
+        function onDocumentMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX);
+            mouseY = (event.clientY - windowHalfY);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // ANIMATION LOOP
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+
+            particlesMesh.rotation.y += 0.001;
+            linesMesh.rotation.y += 0.001;
+
+            particlesMesh.rotation.x += 0.05 * (targetY - particlesMesh.rotation.x);
+            particlesMesh.rotation.y += 0.05 * (targetX - particlesMesh.rotation.y);
+
+            linesMesh.rotation.x += 0.05 * (targetY - linesMesh.rotation.x);
+            linesMesh.rotation.y += 0.05 * (targetX - linesMesh.rotation.y);
+
+            // Gentle pulse
+            const scale = 1 + Math.sin(elapsedTime * 0.5) * 0.05;
+            linesMesh.scale.set(scale, scale, scale);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Stats Counter Animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    animateStats();
+                    observer.disconnect();
+                }
+            });
+        });
+        observer.observe(document.querySelector('.stats-grid'));
+
+        function animateStats() {
+            document.querySelectorAll('.stat-val').forEach(el => {
+                const target = parseInt(el.dataset.target);
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += Math.ceil(target / 50);
+                    if (current >= target) {
+                        el.innerText = target;
+                        clearInterval(timer);
+                    } else {
+                        el.innerText = current;
+                    }
+                }, 30);
+            });
+        }
+
+        // Nav Active State
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navBtns.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('href').includes(current)) {
+                    btn.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
