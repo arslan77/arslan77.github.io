@@ -26,6 +26,87 @@
             --sans: 'DM Sans', sans-serif;
         }
 
+        /* ── Light Theme ── */
+        [data-theme="light"] {
+            --bg: #f8f9ff;
+            --s1: #eef0fb;
+            --s2: #e4e8f7;
+            --p: #6d28d9;
+            --p2: #4f46e5;
+            --cyan: #0891b2;
+            --pink: #db2777;
+            --green: #16a34a;
+            --text: #1e1b4b;
+            --muted: #6b7280;
+            --border: rgba(109, 40, 217, 0.18);
+            --glow: rgba(109, 40, 217, 0.25);
+        }
+
+        [data-theme="light"] body {
+            background: var(--bg);
+        }
+
+        [data-theme="light"] nav {
+            background: rgba(248, 249, 255, 0.88);
+        }
+
+        [data-theme="light"] .glass {
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 24px rgba(109, 40, 217, 0.07);
+        }
+
+        [data-theme="light"] .exp-item {
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        [data-theme="light"] #graph-container {
+            background: radial-gradient(ellipse at center, rgba(109, 40, 217, .06) 0%, transparent 70%);
+        }
+
+        [data-theme="light"] #bg-canvas {
+            opacity: 0.25;
+        }
+
+        [data-theme="light"] .hero-title .name {
+            background: linear-gradient(135deg, var(--text) 10%, var(--p) 50%, var(--cyan) 90%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] #cursor {
+            background: var(--p);
+            mix-blend-mode: multiply;
+        }
+
+        [data-theme="light"] .chip {
+            background: rgba(8, 145, 178, 0.10);
+            border-color: rgba(8, 145, 178, 0.25);
+        }
+
+        /* ── Theme Toggle Button ── */
+        #theme-toggle {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 14px;
+            cursor: pointer;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: .75rem;
+            letter-spacing: 1px;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: 12px;
+        }
+
+        #theme-toggle:hover {
+            border-color: var(--p);
+            color: var(--p);
+        }
+
         *,
         *::before,
         *::after {
@@ -668,8 +749,13 @@
             <li><a href="#projects">Projects</a></li>
             <li><a href="#contact">Contact</a></li>
         </ul>
-        <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf"
-            target="_blank" class="nav-cta">Resume ↗</a>
+        <div style="display:flex;align-items:center;gap:8px;">
+            <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf"
+                target="_blank" class="nav-cta">Resume ↗</a>
+            <button id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark">
+                <span id="theme-icon">☀️</span> <span id="theme-label">Light</span>
+            </button>
+        </div>
     </nav>
 
     <!-- HERO -->
@@ -1172,7 +1258,25 @@
             delay: anime.stagger(60, { start: 800 }),
             duration: 500, easing: 'easeOutQuad'
         });
+
+        // ═══════════════════════════════════════════════════
+        // THEME TOGGLE
+        // ═══════════════════════════════════════════════════
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const isDark = theme === 'dark';
+            document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
+            document.getElementById('theme-label').textContent = isDark ? 'Light' : 'Dark';
+            localStorage.setItem('nn-theme', theme);
+        }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+        // Restore saved preference on load
+        applyTheme(localStorage.getItem('nn-theme') || 'dark');
     </script>
+
 </body>
 
 </html>
