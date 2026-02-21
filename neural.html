@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arslan Arshad | Neural Portfolio</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050510;
+            --s1: #0c0c1e;
+            --s2: #121228;
+            --p: #a78bfa;
+            --p2: #818cf8;
+            --cyan: #22d3ee;
+            --pink: #f472b6;
+            --green: #4ade80;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --border: rgba(167, 139, 250, 0.15);
+            --glow: rgba(167, 139, 250, 0.3);
+            --mono: 'DM Mono', monospace;
+            --sans: 'DM Sans', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            overflow-x: hidden
+        }
+
+        /* Fixed canvas */
+        #bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none
+        }
+
+        /* Cursor */
+        #cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--p);
+            mix-blend-mode: screen;
+            transition: transform 0.15s ease;
+        }
+
+        #cursor-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(167, 139, 250, 0.6);
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 20px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(5, 5, 16, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: var(--mono);
+            font-size: .9rem;
+            color: var(--p);
+            letter-spacing: 3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--muted);
+            font-size: .85rem;
+            letter-spacing: 1px;
+            transition: color .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--p)
+        }
+
+        .nav-cta {
+            padding: 8px 20px;
+            border: 1px solid var(--p);
+            border-radius: 50px;
+            color: var(--p);
+            text-decoration: none;
+            font-size: .82rem;
+            transition: all .3s;
+        }
+
+        .nav-cta:hover {
+            background: rgba(167, 139, 250, .1);
+            box-shadow: 0 0 20px var(--glow)
+        }
+
+        /* ── HERO ── */
+        #hero {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 60px;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .hero-tag {
+            font-family: var(--mono);
+            font-size: .72rem;
+            letter-spacing: 4px;
+            color: var(--cyan);
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp .8s .2s forwards;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -4px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp .8s .4s forwards;
+        }
+
+        .hero-title .name {
+            display: block;
+            background: linear-gradient(135deg, #fff 20%, var(--p) 50%, var(--cyan) 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-title .role {
+            display: block;
+            font-size: 40%;
+            letter-spacing: 2px;
+            font-weight: 300;
+            color: var(--muted);
+            -webkit-text-fill-color: var(--muted);
+        }
+
+        .hero-desc {
+            max-width: 520px;
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 48px;
+            opacity: 0;
+            animation: fadeUp .8s .6s forwards;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            opacity: 0;
+            animation: fadeUp .8s .8s forwards;
+        }
+
+        .btn-neon {
+            padding: 14px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .88rem;
+            transition: all .3s;
+        }
+
+        .btn-neon.primary {
+            background: linear-gradient(135deg, var(--p), var(--p2));
+            color: #fff;
+            box-shadow: 0 0 30px var(--glow);
+        }
+
+        .btn-neon.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 50px var(--glow)
+        }
+
+        .btn-neon.outline {
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: var(--muted);
+        }
+
+        .btn-neon.outline:hover {
+            border-color: var(--cyan);
+            color: var(--cyan)
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            font-family: var(--mono);
+            font-size: .65rem;
+            letter-spacing: 3px;
+            color: var(--muted);
+            text-transform: uppercase;
+            animation: bob 2s ease infinite, fadeUp .8s 1s both;
+        }
+
+        @keyframes bob {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(6px)
+            }
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* ── SECTIONS ── */
+        section {
+            position: relative;
+            z-index: 10
+        }
+
+        .section-wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 60px
+        }
+
+        .sec-label {
+            font-family: var(--mono);
+            font-size: .7rem;
+            letter-spacing: 4px;
+            color: var(--p);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sec-label::before {
+            content: '';
+            width: 32px;
+            height: 1px;
+            background: var(--p)
+        }
+
+        .sec-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 60px;
+            line-height: 1.1;
+        }
+
+        .sec-title em {
+            font-style: normal;
+            background: linear-gradient(90deg, var(--p), var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── GRAPH SECTION ── */
+        #graph {
+            padding: 100px 0 0
+        }
+
+        #graph-container {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, rgba(167, 139, 250, .06) 0%, transparent 70%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        #d3-graph {
+            width: 100%;
+            height: 100%
+        }
+
+        .graph-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-family: var(--mono);
+            font-size: .65rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+
+        /* ── GLASS CARDS ── */
+        .glass {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            backdrop-filter: blur(10px);
+            transition: all .35s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--p), transparent);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .glass:hover {
+            border-color: rgba(167, 139, 250, .35);
+            transform: translateY(-5px)
+        }
+
+        .glass:hover::before {
+            opacity: 1
+        }
+
+        /* ── ABOUT ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(167, 139, 250, .06);
+            border-radius: 12px;
+            border: 1px solid rgba(167, 139, 250, .1)
+        }
+
+        .stat-n {
+            font-size: 2.5rem;
+            font-weight: 800;
+            font-family: var(--mono);
+            color: var(--p)
+        }
+
+        .stat-l {
+            font-size: .75rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px
+        }
+
+        .about-text {
+            font-size: 1rem;
+            color: var(--muted);
+            line-height: 1.85
+        }
+
+        .about-text strong {
+            color: var(--text)
+        }
+
+        /* ── EXPERIENCE ── */
+        .exp-list {
+            display: grid;
+            gap: 20px
+        }
+
+        .exp-item {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 24px;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, .02);
+            transition: all .3s
+        }
+
+        .exp-item:hover {
+            border-color: rgba(167, 139, 250, .3);
+            background: rgba(167, 139, 250, .04)
+        }
+
+        .exp-year {
+            font-family: var(--mono);
+            font-size: .72rem;
+            color: var(--p);
+            letter-spacing: 2px;
+            white-space: nowrap;
+            padding-top: 2px
+        }
+
+        .exp-co {
+            font-size: 1.1rem;
+            font-weight: 700
+        }
+
+        .exp-role {
+            font-size: .82rem;
+            color: var(--cyan);
+            letter-spacing: 1px;
+            margin: 3px 0 12px
+        }
+
+        .exp-pts {
+            list-style: none;
+            color: var(--muted);
+            font-size: .875rem;
+            line-height: 1.7
+        }
+
+        .exp-pts li {
+            padding-left: 16px;
+            position: relative;
+            margin-bottom: 4px
+        }
+
+        .exp-pts li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--p)
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px
+        }
+
+        .chip {
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: .7rem;
+            font-family: var(--mono);
+            background: rgba(34, 211, 238, .08);
+            border: 1px solid rgba(34, 211, 238, .2);
+            color: var(--cyan);
+        }
+
+        /* ── PROJECTS ── */
+        .proj-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px
+        }
+
+        .proj-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .proj-desc {
+            font-size: .875rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 16px
+        }
+
+        .proj-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border)
+        }
+
+        .proj-link {
+            font-size: .75rem;
+            color: var(--p);
+            text-decoration: none;
+            letter-spacing: 1px;
+            font-family: var(--mono);
+            transition: opacity .2s
+        }
+
+        .proj-link:hover {
+            opacity: .7
+        }
+
+        /* ── CONTACT ── */
+        #contact {
+            text-align: center
+        }
+
+        #contact .section-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        .contact-grid {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 40px
+        }
+
+        .c-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: .88rem;
+            font-weight: 500;
+            transition: all .3s;
+        }
+
+        .c-link.email {
+            background: rgba(167, 139, 250, .12);
+            border: 1px solid rgba(167, 139, 250, .35);
+            color: var(--p)
+        }
+
+        .c-link.gh {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .12);
+            color: var(--text)
+        }
+
+        .c-link.li {
+            background: rgba(34, 211, 238, .09);
+            border: 1px solid rgba(34, 211, 238, .25);
+            color: var(--cyan)
+        }
+
+        .c-link:hover {
+            transform: translateY(-4px);
+            filter: brightness(1.3)
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: .78rem;
+            font-family: var(--mono);
+            letter-spacing: 1px;
+        }
+
+        /* Divider */
+        .div-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 0 60px
+        }
+
+        /* Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none
+        }
+
+        @media(max-width:768px) {
+            nav {
+                padding: 16px 20px
+            }
+
+            #hero,
+            section .section-wrap {
+                padding-left: 20px;
+                padding-right: 20px
+            }
+
+            .about-grid,
+            .proj-grid {
+                grid-template-columns: 1fr
+            }
+
+            .nav-links {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bg-canvas"></canvas>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- NAV -->
+    <nav>
+        <div class="nav-logo">AA.NEURAL</div>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#graph">Skills Graph</a></li>
+            <li><a href="#experience">Experience</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf"
+            target="_blank" class="nav-cta">Resume ↗</a>
+    </nav>
+
+    <!-- HERO -->
+    <section id="hero">
+        <div class="hero-tag">// Senior Software Engineer · Dubai, UAE</div>
+        <h1 class="hero-title">
+            <span class="name">Arslan Arshad</span>
+            <span class="role">Backend · Microservices · Distributed Systems</span>
+        </h1>
+        <p class="hero-desc">Building systems that scale to millions. 8+ years crafting microservices, event-driven
+            architectures, and cloud-native platforms at Delivery Hero, Careem (Uber), and beyond.</p>
+        <div class="hero-btns">
+            <a href="#about" class="btn-neon primary">Explore Profile</a>
+            <a href="#graph" class="btn-neon outline">View Skill Graph ↓</a>
+        </div>
+        <div class="scroll-hint">↓ scroll to explore</div>
+    </section>
+
+    <div class="div-line"></div>
+
+    <!-- ABOUT -->
+    <section id="about">
+        <div class="section-wrap">
+            <div class="sec-label">01 about</div>
+            <h2 class="sec-title">Architect of <em>scale</em></h2>
+            <div class="about-grid">
+                <div class="glass reveal">
+                    <p class="about-text">
+                        Senior Software Engineer at <strong>HungerStation (Delivery Hero)</strong>, building Go
+                        microservices that power food delivery for millions across the Middle East.
+                        <br><br>
+                        I hold an <strong>MS in Computer Science</strong> from NUST SEECS, and have shipped production
+                        systems across food tech, ride-hailing, edtech, healthcare, and IoT.
+                        <br><br>
+                        I thrive on distributed challenges — designing event-driven architectures, gRPC service meshes,
+                        and observability stacks that stay reliable at scale.
+                    </p>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div class="stat-row">
+                        <div class="stat-box reveal" style="transition-delay:.1s">
+                            <div class="stat-n" id="cnt-years">0</div>
+                            <div class="stat-l">Years Exp.</div>
+                        </div>
+                        <div class="stat-box reveal" style="transition-delay:.2s">
+                            <div class="stat-n" id="cnt-partners">0</div>
+                            <div class="stat-l">Partners</div>
+                        </div>
+                        <div class="stat-box reveal" style="transition-delay:.3s">
+                            <div class="stat-n" id="cnt-companies">0</div>
+                            <div class="stat-l">Companies</div>
+                        </div>
+                    </div>
+                    <div class="glass reveal" style="transition-delay:.15s">
+                        <div
+                            style="font-family:var(--mono);font-size:.72rem;color:var(--cyan);letter-spacing:2px;margin-bottom:12px">
+                            CURRENTLY USING</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <span class="chip">Go</span><span class="chip">gRPC</span><span class="chip">Kafka</span>
+                            <span class="chip">GKE</span><span class="chip">PostgreSQL</span><span
+                                class="chip">Redis</span>
+                            <span class="chip">Terraform</span><span class="chip">Cursor AI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div-line"></div>
+
+    <!-- D3 FORCE GRAPH -->
+    <section id="graph">
+        <div class="section-wrap" style="padding-bottom:30px">
+            <div class="sec-label">02 skills mesh</div>
+            <h2 class="sec-title">The <em>neural</em> network</h2>
+            <p style="color:var(--muted);margin-top:-40px;margin-bottom:40px;font-size:.95rem">
+                An interactive graph of my skills, tools, and technologies. Drag the nodes. Hover to inspect.
+            </p>
+        </div>
+        <div id="graph-container">
+            <svg id="d3-graph"></svg>
+            <div class="graph-hint">// drag nodes · hover to inspect</div>
+        </div>
+    </section>
+
+    <div class="div-line"></div>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+        <div class="section-wrap">
+            <div class="sec-label">03 experience</div>
+            <h2 class="sec-title">Where I've <em>shipped</em></h2>
+            <div class="exp-list">
+                <div class="exp-item reveal">
+                    <div class="exp-year">OCT 2023<br>PRESENT</div>
+                    <div>
+                        <div class="exp-co">HungerStation · Delivery Hero</div>
+                        <div class="exp-role">Senior Software Engineer — Dubai, UAE</div>
+                        <ul class="exp-pts">
+                            <li>Integration layer for 50+ restaurant partners — Go + gRPC</li>
+                            <li>Led Scheduled Orders initiative with complex Ramadan/Eid scheduling</li>
+                            <li>Logistics Compliance Tool via Athr/Yakeen government APIs</li>
+                        </ul>
+                        <div class="chip-row"><span class="chip">Go</span><span class="chip">gRPC</span><span
+                                class="chip">GKE</span><span class="chip">Pub/Sub</span><span
+                                class="chip">Postgres</span></div>
+                    </div>
+                </div>
+                <div class="exp-item reveal" style="transition-delay:.1s">
+                    <div class="exp-year">APR 2022<br>SEP 2023</div>
+                    <div>
+                        <div class="exp-co">Careem · Uber</div>
+                        <div class="exp-role">Sr. Software Engineer I — Lahore, PK</div>
+                        <ul class="exp-pts">
+                            <li>Driver onboarding & verification pipeline</li>
+                            <li>Gamified tier system — 2 microservices, millions of daily events</li>
+                        </ul>
+                        <div class="chip-row"><span class="chip">Spring Boot</span><span
+                                class="chip">Laravel</span><span class="chip">MongoDB</span><span
+                                class="chip">Redis</span></div>
+                    </div>
+                </div>
+                <div class="exp-item reveal" style="transition-delay:.2s">
+                    <div class="exp-year">OCT 2018<br>MAR 2022</div>
+                    <div>
+                        <div class="exp-co">LearnOBots</div>
+                        <div class="exp-role">Lead Software Engineer</div>
+                        <ul class="exp-pts">
+                            <li>LearnOSTEAM EdTech platform — 50+ schools, 10K+ students</li>
+                            <li>POULTA IoT — AWS Greengrass, 500+ devices, 4 fleet types</li>
+                        </ul>
+                        <div class="chip-row"><span class="chip">Django</span><span class="chip">K8s</span><span
+                                class="chip">AWS IoT</span><span class="chip">Node.js</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div-line"></div>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+        <div class="section-wrap">
+            <div class="sec-label">04 projects</div>
+            <h2 class="sec-title">Things I've <em>built</em></h2>
+            <div class="proj-grid">
+                <div class="glass reveal">
+                    <div class="proj-title">Resume Build System</div>
+                    <div class="proj-desc">Automated LaTeX pipeline. Push code → CI/CD generates PDF → GitHub Release.
+                        One source of truth for all resume variants.</div>
+                    <div class="chip-row" style="margin-bottom:0"><span class="chip">GitHub Actions</span><span
+                            class="chip">LaTeX</span><span class="chip">Docker</span></div>
+                    <div class="proj-foot">
+                        <a href="https://github.com/arslan77/resume" target="_blank" class="proj-link">VIEW ON GITHUB
+                            ↗</a>
+                    </div>
+                </div>
+                <div class="glass reveal" style="transition-delay:.1s">
+                    <div class="proj-title">Airport Security System</div>
+                    <div class="proj-desc">Facial recognition and real-time access control for Gunnebo BGR. Custom CV
+                        pipeline with threat scoring.</div>
+                    <div class="chip-row" style="margin-bottom:0"><span class="chip">Python</span><span
+                            class="chip">TensorFlow</span><span class="chip">OpenCV</span></div>
+                    <div class="proj-foot">
+                        <span style="font-size:.72rem;color:var(--muted);font-family:var(--mono)">PROPRIETARY</span>
+                    </div>
+                </div>
+                <div class="glass reveal" style="transition-delay:.2s">
+                    <div class="proj-title">POULTA IoT Platform</div>
+                    <div class="proj-desc">Full-stack IoT solution for poultry farming — 500+ devices, predictive
+                        analytics, real-time dashboards.</div>
+                    <div class="chip-row" style="margin-bottom:0"><span class="chip">AWS IoT</span><span
+                            class="chip">Node.js</span><span class="chip">MongoDB</span></div>
+                    <div class="proj-foot">
+                        <span style="font-size:.72rem;color:var(--muted);font-family:var(--mono)">PROPRIETARY</span>
+                    </div>
+                </div>
+                <div class="glass reveal" style="transition-delay:.3s">
+                    <div class="proj-title">PingPong Lead Gen</div>
+                    <div class="proj-desc">B2B marketing automation — crawl, score and reach leads at scale. Used by UK
+                        agencies.</div>
+                    <div class="chip-row" style="margin-bottom:0"><span class="chip">Laravel</span><span
+                            class="chip">Vue.js</span><span class="chip">Redis</span></div>
+                    <div class="proj-foot">
+                        <span style="font-size:.72rem;color:var(--muted);font-family:var(--mono)">PROPRIETARY</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="div-line"></div>
+
+    <!-- CONTACT -->
+    <section id="contact">
+        <div class="section-wrap">
+            <div class="sec-label">05 contact</div>
+            <h2 class="sec-title reveal">Let's build something <em>great</em></h2>
+            <p class="reveal" style="color:var(--muted);max-width:480px;line-height:1.8;transition-delay:.1s">
+                Open to senior/staff engineering roles, distributed systems consulting, and interesting hard problems.
+            </p>
+            <div class="contact-grid reveal" style="transition-delay:.2s">
+                <a href="mailto:arslanarshad07@gmail.com" class="c-link email">✉ arslanarshad07@gmail.com</a>
+                <a href="https://github.com/arslan77" target="_blank" class="c-link gh">⌥ github.com/arslan77</a>
+                <a href="https://linkedin.com/in/iamarslan" target="_blank" class="c-link li">↗
+                    linkedin.com/in/iamarslan</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <a href="lab.html" style="color:var(--muted);text-decoration:none;">← back to lab</a>
+        &nbsp;·&nbsp; arslan arshad &nbsp;·&nbsp; built with three.js + d3.js + anime.js
+    </footer>
+
+    <!-- LIBS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script>
+        // ═══════════════════════════════════════════════════
+        // CUSTOM CURSOR
+        // ═══════════════════════════════════════════════════
+        const cur = document.getElementById('cursor');
+        const ring = document.getElementById('cursor-ring');
+        let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+        let rx = mx, ry = my;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cur.style.left = mx - 6 + 'px';
+            cur.style.top = my - 6 + 'px';
+        });
+        (function animCursor() {
+            rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        })();
+        document.querySelectorAll('a,.glass,.exp-item,.stat-box').forEach(el => {
+            el.addEventListener('mouseenter', () => { ring.style.transform = 'translate(-50%,-50%) scale(2)'; ring.style.borderColor = 'rgba(167,139,250,0.9)'; });
+            el.addEventListener('mouseleave', () => { ring.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(167,139,250,0.6)'; });
+        });
+
+        // ═══════════════════════════════════════════════════
+        // THREE.JS — Morphing Wireframe Background
+        // ═══════════════════════════════════════════════════
+        const bgCanvas = document.getElementById('bg-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas: bgCanvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 200);
+        camera.position.set(0, 0, 20);
+
+        // Main torus-knot (wireframe)
+        const torusGeo = new THREE.TorusKnotGeometry(5, 1.6, 128, 32, 2, 3);
+        const torusMat = new THREE.MeshBasicMaterial({
+            color: 0xa78bfa, wireframe: true, transparent: true, opacity: 0.08
+        });
+        const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+        scene.add(torusMesh);
+
+        // Outer glow ring
+        const ringGeo = new THREE.TorusGeometry(8, 0.03, 8, 120);
+        const ringMat = new THREE.MeshBasicMaterial({ color: 0x818cf8, transparent: true, opacity: 0.15 });
+        scene.add(new THREE.Mesh(ringGeo, ringMat));
+
+        // Floating dots
+        const dotGeo = new THREE.BufferGeometry();
+        const dotPos = new Float32Array(3000);
+        for (let i = 0; i < 3000; i++) {
+            dotPos[i * 3] = (Math.random() - 0.5) * 60;
+            dotPos[i * 3 + 1] = (Math.random() - 0.5) * 60;
+            dotPos[i * 3 + 2] = (Math.random() - 0.5) * 60;
+        }
+        dotGeo.setAttribute('position', new THREE.BufferAttribute(dotPos, 3));
+        scene.add(new THREE.Points(dotGeo, new THREE.PointsMaterial({
+            size: 0.08, color: 0x818cf8, transparent: true, opacity: 0.4,
+            blending: THREE.AdditiveBlending, depthWrite: false
+        })));
+
+        // Mouse parallax
+        let tmx = 0, tmy = 0, cmx = 0, cmy = 0;
+        document.addEventListener('mousemove', e => {
+            tmx = (e.clientX / innerWidth - .5) * 4;
+            tmy = (e.clientY / innerHeight - .5) * 4;
+        });
+
+        const clock3 = new THREE.Clock();
+        let scrollY = 0;
+        window.addEventListener('scroll', () => { scrollY = window.scrollY });
+
+        (function bgAnimate() {
+            requestAnimationFrame(bgAnimate);
+            const t = clock3.getElapsedTime();
+            cmx += (tmx - cmx) * 0.04; cmy += (tmy - cmy) * 0.04;
+            torusMesh.rotation.x = t * 0.08 + cmy * 0.1;
+            torusMesh.rotation.y = t * 0.12 + cmx * 0.1;
+            camera.position.y = -scrollY / innerHeight * 3;
+            renderer.render(scene, camera);
+        })();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+
+        // ═══════════════════════════════════════════════════
+        // D3.JS — Interactive Force-Directed Skill Graph
+        // ═══════════════════════════════════════════════════
+        const nodes = [
+            // Core
+            { id: 'Arslan', group: 'core', size: 28 },
+            // Languages
+            { id: 'Go', group: 'lang', size: 22 }, { id: 'Java', group: 'lang', size: 18 },
+            { id: 'PHP', group: 'lang', size: 16 }, { id: 'Python', group: 'lang', size: 16 },
+            { id: 'TypeScript', group: 'lang', size: 14 }, { id: 'Ruby', group: 'lang', size: 13 },
+            // Frameworks
+            { id: 'Spring Boot', group: 'fw', size: 16 }, { id: 'Laravel', group: 'fw', size: 15 },
+            { id: 'Rails', group: 'fw', size: 13 }, { id: 'Django', group: 'fw', size: 13 },
+            { id: 'Gin', group: 'fw', size: 12 }, { id: 'FastAPI', group: 'fw', size: 11 },
+            // Infra
+            { id: 'Kubernetes', group: 'infra', size: 18 }, { id: 'Docker', group: 'infra', size: 17 },
+            { id: 'AWS', group: 'infra', size: 18 }, { id: 'GKE', group: 'infra', size: 15 },
+            { id: 'Terraform', group: 'infra', size: 13 },
+            // Data
+            { id: 'PostgreSQL', group: 'db', size: 16 }, { id: 'MongoDB', group: 'db', size: 14 },
+            { id: 'Redis', group: 'db', size: 15 }, { id: 'Kafka', group: 'msg', size: 17 },
+            { id: 'gRPC', group: 'msg', size: 16 }, { id: 'Pub/Sub', group: 'msg', size: 13 },
+            // Companies
+            { id: 'HungerStation', group: 'co', size: 20 }, { id: 'Careem', group: 'co', size: 18 },
+            { id: 'LearnOBots', group: 'co', size: 15 },
+        ];
+
+        const links = [
+            // Core connects to everything
+            { source: 'Arslan', target: 'Go' }, { source: 'Arslan', target: 'Java' },
+            { source: 'Arslan', target: 'PHP' }, { source: 'Arslan', target: 'Python' },
+            { source: 'Arslan', target: 'TypeScript' }, { source: 'Arslan', target: 'Ruby' },
+            { source: 'Arslan', target: 'Kubernetes' }, { source: 'Arslan', target: 'Kafka' },
+            { source: 'Arslan', target: 'HungerStation' }, { source: 'Arslan', target: 'Careem' },
+            { source: 'Arslan', target: 'LearnOBots' },
+            // Languages → frameworks
+            { source: 'Go', target: 'Gin' }, { source: 'Go', target: 'gRPC' },
+            { source: 'Java', target: 'Spring Boot' },
+            { source: 'PHP', target: 'Laravel' },
+            { source: 'Ruby', target: 'Rails' },
+            { source: 'Python', target: 'Django' }, { source: 'Python', target: 'FastAPI' },
+            // Companies → tech
+            { source: 'HungerStation', target: 'Go' }, { source: 'HungerStation', target: 'GKE' },
+            { source: 'HungerStation', target: 'PostgreSQL' }, { source: 'HungerStation', target: 'Kafka' },
+            { source: 'Careem', target: 'Spring Boot' }, { source: 'Careem', target: 'Laravel' },
+            { source: 'Careem', target: 'MongoDB' }, { source: 'Careem', target: 'Redis' },
+            { source: 'LearnOBots', target: 'Django' }, { source: 'LearnOBots', target: 'AWS' },
+            { source: 'LearnOBots', target: 'Kubernetes' },
+            // Infra links
+            { source: 'AWS', target: 'Terraform' },
+            { source: 'Kubernetes', target: 'Docker' }, { source: 'Kafka', target: 'Redis' },
+        ];
+
+        const colors = {
+            core: '#f472b6', lang: '#a78bfa', fw: '#818cf8',
+            infra: '#22d3ee', db: '#4ade80', msg: '#fb923c', co: '#fbbf24'
+        };
+
+        const container = document.getElementById('graph-container');
+        const W = container.clientWidth, H = container.clientHeight;
+
+        const svg = d3.select('#d3-graph')
+            .attr('width', W).attr('height', H);
+
+        // Glow filter
+        const defs = svg.append('defs');
+        const filter = defs.append('filter').attr('id', 'glow');
+        filter.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'blur');
+        const feMerge = filter.append('feMerge');
+        feMerge.append('feMergeNode').attr('in', 'blur');
+        feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+        const sim = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(links).id(d => d.id).distance(80).strength(0.5))
+            .force('charge', d3.forceManyBody().strength(-180))
+            .force('center', d3.forceCenter(W / 2, H / 2))
+            .force('collision', d3.forceCollide(d => d.size + 10));
+
+        const link = svg.append('g').selectAll('line')
+            .data(links).join('line')
+            .attr('stroke', d => {
+                const sc = colors[nodes.find(n => n.id === d.source || n === d.source)?.group] || '#555';
+                return sc;
+            })
+            .attr('stroke-opacity', 0.25)
+            .attr('stroke-width', 1);
+
+        const node = svg.append('g').selectAll('g')
+            .data(nodes).join('g')
+            .call(d3.drag()
+                .on('start', (event, d) => { if (!event.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+                .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+                .on('end', (event, d) => { if (!event.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
+            );
+
+        // Node circle
+        node.append('circle')
+            .attr('r', d => d.size / 2 + 4)
+            .attr('fill', d => colors[d.group] + '22')
+            .attr('stroke', d => colors[d.group])
+            .attr('stroke-width', 1.5)
+            .attr('filter', 'url(#glow)')
+            .style('cursor', 'grab');
+
+        // Node label
+        node.append('text')
+            .text(d => d.id)
+            .attr('fill', d => colors[d.group])
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.35em')
+            .attr('font-size', d => Math.min(d.size * 0.6, 11))
+            .attr('font-family', "'DM Mono',monospace")
+            .style('pointer-events', 'none')
+            .style('user-select', 'none');
+
+        // Pulse animation via Anime.js
+        nodes.forEach((n, i) => {
+            const circle = document.querySelectorAll('#d3-graph circle')[i];
+            if (circle) {
+                anime({
+                    targets: circle, r: [n.size / 2 + 4, n.size / 2 + 8, n.size / 2 + 4],
+                    duration: 2000 + Math.random() * 2000,
+                    easing: 'easeInOutSine', loop: true, delay: Math.random() * 1000
+                });
+            }
+        });
+
+        // Tooltip
+        const tooltip = d3.select('body').append('div')
+            .style('position', 'fixed').style('pointer-events', 'none')
+            .style('background', 'rgba(12,12,32,.95)').style('border', '1px solid rgba(167,139,250,.3)')
+            .style('border-radius', '8px').style('padding', '8px 14px')
+            .style('font-family', "'DM Mono',monospace").style('font-size', '12px')
+            .style('color', '#a78bfa').style('letter-spacing', '1px').style('opacity', 0)
+            .style('z-index', '9997');
+
+        node.on('mouseenter', (event, d) => {
+            tooltip.text(d.id + ' · ' + d.group).style('opacity', 1)
+                .style('left', event.clientX + 16 + 'px').style('top', event.clientY - 10 + 'px');
+            d3.select(event.currentTarget).select('circle')
+                .attr('stroke-width', 3).attr('fill', d => colors[d.group] + '44');
+        }).on('mousemove', event => {
+            tooltip.style('left', event.clientX + 16 + 'px').style('top', event.clientY - 10 + 'px');
+        }).on('mouseleave', (event, d) => {
+            tooltip.style('opacity', 0);
+            d3.select(event.currentTarget).select('circle')
+                .attr('stroke-width', 1.5).attr('fill', d => colors[d.group] + '22');
+        });
+
+        sim.on('tick', () => {
+            link
+                .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        // ═══════════════════════════════════════════════════
+        // ANIME.JS — Counter Animations
+        // ═══════════════════════════════════════════════════
+        function runCounters() {
+            anime({ targets: '#cnt-years', innerHTML: [0, 8], round: 1, duration: 1500, easing: 'easeOutExpo' });
+            anime({ targets: '#cnt-partners', innerHTML: [0, 50], round: 1, duration: 1800, easing: 'easeOutExpo' });
+            anime({ targets: '#cnt-companies', innerHTML: [0, 6], round: 1, duration: 1200, easing: 'easeOutExpo' });
+        }
+
+        // ═══════════════════════════════════════════════════
+        // SCROLL REVEALS — IntersectionObserver
+        // ═══════════════════════════════════════════════════
+        let countersRun = false;
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    if (e.target.id === 'about' && !countersRun) { countersRun = true; setTimeout(runCounters, 400); }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+        document.querySelectorAll('section[id]').forEach(el => io.observe(el));
+
+        // ═══════════════════════════════════════════════════
+        // Hero entrance stagger for chips
+        // ═══════════════════════════════════════════════════
+        anime({
+            targets: '.chip',
+            opacity: [0, 1], translateY: [10, 0],
+            delay: anime.stagger(60, { start: 800 }),
+            duration: 500, easing: 'easeOutQuad'
+        });
+    </script>
+</body>
+
+</html>
