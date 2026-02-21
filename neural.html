@@ -60,11 +60,13 @@
         }
 
         [data-theme="light"] #graph-container {
-            background: radial-gradient(ellipse at center, rgba(109, 40, 217, .06) 0%, transparent 70%);
+            background: linear-gradient(135deg, rgba(109, 40, 217, .08) 0%, rgba(8, 145, 178, .06) 100%);
+            border-color: rgba(109, 40, 217, .25);
         }
 
         [data-theme="light"] #bg-canvas {
-            opacity: 0.25;
+            opacity: 0.55;
+            filter: invert(1) hue-rotate(180deg);
         }
 
         [data-theme="light"] .hero-title .name {
@@ -1268,6 +1270,11 @@
             document.getElementById('theme-icon').textContent = isDark ? '☀️' : '🌙';
             document.getElementById('theme-label').textContent = isDark ? 'Light' : 'Dark';
             localStorage.setItem('nn-theme', theme);
+            // Swap Three.js material colors for readability
+            if (typeof torusMat !== 'undefined') {
+                torusMat.color.set(isDark ? 0xa78bfa : 0x5b21b6);
+                torusMat.opacity = isDark ? 0.08 : 0.22;
+            }
         }
         function toggleTheme() {
             const current = document.documentElement.getAttribute('data-theme') || 'dark';
