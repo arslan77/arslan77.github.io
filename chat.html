@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArslanAI — Portfolio Chat</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --sidebar: #161616;
+            --surface: #1e1e1e;
+            --border: #2a2a2a;
+            --input: #252525;
+            --p: #7c3aed;
+            --p2: #a78bfa;
+            --text: #e5e5e5;
+            --muted: #737373;
+            --user-bubble: #7c3aed;
+            --ai-bubble: #1e1e1e;
+            --sans: 'Inter', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans)
+        }
+
+        /* Layout */
+        .app {
+            display: flex;
+            height: 100vh;
+            overflow: hidden
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 16px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            padding: 0 16px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .ai-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--p), var(--p2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: .88rem;
+            font-weight: 600
+        }
+
+        .sidebar-sub {
+            font-size: .68rem;
+            color: var(--muted);
+            margin-top: 1px
+        }
+
+        .sidebar-section {
+            padding: 8px 16px;
+            font-size: .65rem;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .suggestion {
+            margin: 2px 8px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: .78rem;
+            color: #a3a3a3;
+            cursor: pointer;
+            transition: background .2s;
+            line-height: 1.4;
+            border: none;
+            background: none;
+            text-align: left;
+            width: calc(100% - 16px);
+        }
+
+        .suggestion:hover {
+            background: rgba(255, 255, 255, .06);
+            color: var(--text)
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--muted);
+            font-size: .75rem;
+            transition: color .2s;
+            width: 100%;
+            padding: 6px 4px;
+            border-radius: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .back-link:hover {
+            color: var(--text)
+        }
+
+        /* Chat area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg);
+            flex-shrink: 0;
+        }
+
+        .chat-header-title {
+            font-size: .88rem;
+            font-weight: 600
+        }
+
+        .chat-header-sub {
+            font-size: .72rem;
+            color: var(--muted)
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            display: inline-block;
+            box-shadow: 0 0 6px #22c55e;
+            margin-right: 6px;
+        }
+
+        /* Messages */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 4px
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 2px
+        }
+
+        .msg {
+            display: flex;
+            gap: 12px;
+            max-width: 760px
+        }
+
+        .msg.user {
+            flex-direction: row-reverse;
+            align-self: flex-end
+        }
+
+        .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .85rem;
+        }
+
+        .msg-avatar.ai {
+            background: linear-gradient(135deg, var(--p), var(--p2))
+        }
+
+        .msg-avatar.user {
+            background: #292929
+        }
+
+        .msg-bubble {
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: .875rem;
+            line-height: 1.65;
+            max-width: 640px;
+        }
+
+        .msg.ai .msg-bubble {
+            background: var(--ai-bubble);
+            border: 1px solid var(--border);
+            border-top-left-radius: 2px;
+        }
+
+        .msg.user .msg-bubble {
+            background: var(--user-bubble);
+            color: #fff;
+            border-top-right-radius: 2px;
+        }
+
+        .msg-bubble code {
+            font-family: var(--mono);
+            font-size: .78rem;
+            background: rgba(255, 255, 255, .08);
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+
+        .msg-bubble .tag {
+            display: inline-block;
+            background: rgba(124, 58, 237, .2);
+            border: 1px solid rgba(124, 58, 237, .3);
+            color: var(--p2);
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: .72rem;
+            margin: 2px 2px 2px 0;
+            font-family: var(--mono);
+        }
+
+        .msg-bubble ul {
+            padding-left: 16px;
+            margin-top: 4px
+        }
+
+        .msg-bubble li {
+            margin-bottom: 3px
+        }
+
+        .msg-bubble strong {
+            color: #fff;
+            font-weight: 600
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+            align-items: center
+        }
+
+        .typing span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--muted);
+            animation: bounce .9s infinite
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: .15s
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: .3s
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-4px)
+            }
+        }
+
+        /* Input area */
+        .input-area {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .input-wrap {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            transition: border-color .2s;
+        }
+
+        .input-wrap:focus-within {
+            border-color: rgba(124, 58, 237, .5)
+        }
+
+        #user-input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: .875rem;
+            resize: none;
+            max-height: 120px;
+            line-height: 1.5;
+        }
+
+        #user-input::placeholder {
+            color: var(--muted)
+        }
+
+        .send-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: var(--p);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all .2s;
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .send-btn:hover {
+            background: #6d28d9;
+            transform: scale(1.05)
+        }
+
+        .input-hint {
+            font-size: .65rem;
+            color: var(--muted);
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        @media(max-width:640px) {
+            .sidebar {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="ai-avatar">🤖</div>
+                <div>
+                    <div class="sidebar-title">ArslanAI</div>
+                    <div class="sidebar-sub">Portfolio Assistant</div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">Suggested Questions</div>
+            <button class="suggestion" onclick="ask('What companies has Arslan worked at?')">🏢 What companies has
+                Arslan worked at?</button>
+            <button class="suggestion" onclick="ask('What is Arslan\'s strongest technical skill?')">⚡ What is his
+                strongest skill?</button>
+            <button class="suggestion" onclick="ask('Tell me about the HungerStation project')">🍔 Tell me about
+                HungerStation</button>
+            <button class="suggestion" onclick="ask('What projects has Arslan built?')">📦 What projects has he
+                built?</button>
+            <button class="suggestion" onclick="ask('Is Arslan open to new opportunities?')">💼 Is Arslan open to new
+                roles?</button>
+            <button class="suggestion" onclick="ask('What makes Arslan different from other engineers?')">✨ What makes
+                him stand out?</button>
+            <button class="suggestion" onclick="ask('What is Arslan\'s educational background?')">🎓 Education
+                background?</button>
+            <button class="suggestion" onclick="ask('How can I contact Arslan?')">✉ How can I contact him?</button>
+
+            <div class="sidebar-footer">
+                <a href="lab.html" class="back-link">← Back to Portfolio Lab</a>
+            </div>
+        </aside>
+
+        <!-- Chat -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <div>
+                    <div class="chat-header-title"><span class="status-dot"></span>ArslanAI is online</div>
+                    <div class="chat-header-sub">Ask anything about Arslan's career, skills &amp; projects</div>
+                </div>
+                <div style="font-size:.7rem;color:var(--muted);font-family:var(--mono)">v2.0 · GPT-style UX</div>
+            </header>
+
+            <div class="messages" id="messages"></div>
+
+            <div class="input-area">
+                <div class="input-wrap">
+                    <textarea id="user-input" rows="1"
+                        placeholder="Ask about Arslan's experience, skills, or projects..."></textarea>
+                    <button class="send-btn" id="send-btn" onclick="sendMessage()">↑</button>
+                </div>
+                <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // ── KNOWLEDGE BASE ─────────────────────────────────────────────────
+        const KB = {
+            greetings: ['hi', 'hello', 'hey', 'howdy', 'hola', 'sup'],
+
+            responses: {
+                experience: {
+                    keywords: ['experience', 'work', 'job', 'career', 'employment', 'company', 'companies', 'worked', 'employers'],
+                    reply: `<strong>Arslan's Career Timeline</strong><br><br>
+<span class="tag">Current</span> <strong>HungerStation · Delivery Hero</strong> — Senior SWE, Dubai (Oct 2023→)<br>
+<span class="tag">2022–23</span> <strong>Careem · Uber</strong> — Sr. SWE I, Lahore<br>
+<span class="tag">2018–22</span> <strong>LearnOBots</strong> — Lead SWE, Islamabad<br>
+<span class="tag">2017–18</span> <strong>Brainyloft</strong> — SWE, Lahore/Philadelphia<br><br>
+That's <strong>8+ years</strong> across food delivery, ride-hailing, edtech, IoT, and B2B SaaS.`
+                },
+                hungerstation: {
+                    keywords: ['hungerstation', 'hunger station', 'delivery hero', 'current', 'dubai', 'restaurant'],
+                    reply: `<strong>HungerStation (Delivery Hero) — Dubai</strong><br><br>
+Arslan's current role since Oct 2023. Key contributions:<br>
+<ul>
+<li>Built integration layer for <strong>50+ restaurant partners</strong> using <code>Go + gRPC</code></li>
+<li>Led <strong>Scheduled Orders</strong> initiative (complex Ramadan/Eid scheduling)</li>
+<li>Built <strong>Logistics Compliance Tool</strong> via Athr/Yakeen government APIs</li>
+<li>Item Replacement feature with real-time inventory checks</li>
+</ul>
+Stack: <span class="tag">Go</span><span class="tag">gRPC</span><span class="tag">GKE</span><span class="tag">Pub/Sub</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span>`
+                },
+                careem: {
+                    keywords: ['careem', 'uber', 'ride', 'hailing', 'captain', 'tier'],
+                    reply: `<strong>Careem · Uber — Lahore (Apr 2022 → Sep 2023)</strong><br><br>
+<ul>
+<li><strong>Captain Acquisition</strong>: Driver onboarding + Tawseel compliance pipeline</li>
+<li><strong>Captain Reward</strong>: Gamified tier system across 2 microservices, millions of events/day</li>
+</ul>
+Stack: <span class="tag">Spring Boot</span><span class="tag">Laravel</span><span class="tag">MongoDB</span><span class="tag">Redis</span><span class="tag">Kafka</span>`
+                },
+                skills: {
+                    keywords: ['skill', 'tech', 'stack', 'language', 'framework', 'use', 'know', 'proficient', 'expert', 'technologies', 'strongest', 'best'],
+                    reply: `<strong>Arslan's Technical Skillset</strong><br><br>
+<strong>Languages:</strong> <span class="tag">Go</span><span class="tag">Java</span><span class="tag">PHP</span><span class="tag">Python</span><span class="tag">Ruby</span><span class="tag">TypeScript</span><br>
+<strong>Frameworks:</strong> <span class="tag">Spring Boot</span><span class="tag">Laravel</span><span class="tag">Rails</span><span class="tag">Django</span><span class="tag">Gin</span><br>
+<strong>Infra:</strong> <span class="tag">Kubernetes</span><span class="tag">Docker</span><span class="tag">AWS</span><span class="tag">GKE</span><span class="tag">Terraform</span><br>
+<strong>Messaging:</strong> <span class="tag">Kafka</span><span class="tag">gRPC</span><span class="tag">Pub/Sub</span><br>
+<strong>Databases:</strong> <span class="tag">PostgreSQL</span><span class="tag">MongoDB</span><span class="tag">Redis</span><br><br>
+<em>Primary expertise: Go microservices, event-driven architecture, distributed systems.</em>`
+                },
+                projects: {
+                    keywords: ['project', 'build', 'built', 'create', 'portfolio', 'github', 'side', 'work'],
+                    reply: `<strong>Notable Projects</strong><br><br>
+<strong>📦 Resume Build System</strong> (Open Source)<br>
+LaTeX pipeline — push once, PDF auto-generated via GitHub Actions.<br>github.com/arslan77/resume<br><br>
+<strong>🔒 Airport Security System</strong> (Proprietary)<br>Facial recognition + access control for Gunnebo BGR airports. Python + OpenCV + TensorFlow.<br><br>
+<strong>🐔 POULTA IoT Platform</strong> (Proprietary)<br>500+ smart poultry-farm devices on AWS Greengrass. Real-time dashboards.<br><br>
+<strong>📈 PingPong</strong> (Proprietary)<br>B2B lead-gen automation used by UK agencies. Laravel + Redis.`
+                },
+                education: {
+                    keywords: ['education', 'degree', 'study', 'university', 'college', 'ms', 'bs', 'cgpa', 'grade', 'academic', 'school', 'nust'],
+                    reply: `<strong>Academic Background</strong><br><br>
+<strong>MS Computer Science</strong><br>
+NUST SEECS · 2018–2020 · CGPA 3.35/4.0<br>
+Published: Journal of Economy & Technology<br><br>
+<strong>BS Computer Science</strong><br>
+COMSATS University · 2013–2017 · CGPA 3.60/4.0<br>
+🥈 Silver Medalist`
+                },
+                contact: {
+                    keywords: ['contact', 'email', 'reach', 'hire', 'message', 'connect', 'linkedin', 'github', 'touch'],
+                    reply: `<strong>Get in Touch with Arslan</strong><br><br>
+✉ <strong>arslanarshad07@gmail.com</strong><br>
+⌥ <strong>github.com/arslan77</strong><br>
+↗ <strong>linkedin.com/in/iamarslan</strong><br>
+📍 Dubai, UAE<br><br>
+<em>Response time is typically under 24 hours.</em>`
+                },
+                opportunities: {
+                    keywords: ['open', 'opportunity', 'opportunities', 'available', 'hiring', 'hire', 'job', 'role', 'position', 'looking', 'seeking'],
+                    reply: `<strong>Yes, Arslan is selectively open to new opportunities!</strong><br><br>
+He's particularly interested in:<br>
+<ul>
+<li>Senior or Staff Engineering roles</li>
+<li>Distributed systems / platform engineering challenges</li>
+<li>High-scale fintech, food-tech, or infrastructure companies</li>
+</ul>
+Reach out at <strong>arslanarshad07@gmail.com</strong> with details of the role.`
+                },
+                standout: {
+                    keywords: ['different', 'stand', 'unique', 'special', 'distinguish', 'why', 'value', 'bring', 'offer'],
+                    reply: `<strong>What makes Arslan stand out?</strong><br><br>
+A few things:<br>
+<ul>
+<li>✅ <strong>Breadth + depth</strong>: 8 years across 5 industries (food, ride-hailing, edtech, IoT, security)</li>
+<li>✅ <strong>Scale obsession</strong>: Systems handling millions of events daily</li>
+<li>✅ <strong>Polyglot</strong>: Go, Java, PHP, Python, Ruby — picks the right tool, not the trendy one</li>
+<li>✅ <strong>Academia + industry</strong>: MS + publication, not just code warrior</li>
+<li>✅ <strong>AI-native workflow</strong>: Uses Claude, Copilot, Cursor — ships faster</li>
+</ul>`
+                },
+                go: {
+                    keywords: ['go', 'golang', 'microservice', 'grpc', 'backend'],
+                    reply: `Arslan has deep <strong>Go expertise</strong> from his current role at HungerStation:<br><ul>
+<li>Go + <code>gRPC</code> service mesh for restaurant integrations</li>
+<li>Gin web framework for APIs</li>
+<li>Google PubSub for event streaming</li>
+<li>PostgreSQL + Redis for state management</li>
+</ul>Go is his primary language right now.`
+                },
+                location: {
+                    keywords: ['where', 'location', 'country', 'based', 'live', 'dubai', 'pakistan', 'uae'],
+                    reply: `Arslan is currently based in <strong>Dubai, UAE 🇦🇪</strong>.<br><br>He holds a <strong>Pakistani passport</strong> and has previously worked across:<br>
+<span class="tag">Dubai 🇦🇪</span><span class="tag">Lahore 🇵🇰</span><span class="tag">Islamabad 🇵🇰</span><span class="tag">Philadelphia 🇺🇸</span>`
+                },
+            },
+
+            fallback: [
+                `I'm Arslan's portfolio AI. I can answer questions about his <strong>experience, skills, projects, education,</strong> and how to <strong>contact him</strong>. What would you like to know?`,
+                `I have detailed knowledge about Arslan's career. Try asking about a specific company, technology, or project!`,
+                `Good question — though that might be outside my knowledge scope. Ask me about Arslan's tech stack, work history, or how to contact him.`,
+            ]
+        };
+
+        function findResponse(query) {
+            const q = query.toLowerCase();
+            if (KB.greetings.some(g => q.includes(g)))
+                return `Hey there! 👋 I'm ArslanAI — here to answer your questions about Arslan Arshad's engineering career. Ask me about his experience, skills, projects, or how to get in touch!`;
+            for (const key in KB.responses) {
+                const { keywords, reply } = KB.responses[key];
+                if (keywords.some(k => q.includes(k))) return reply;
+            }
+            return KB.fallback[Math.floor(Math.random() * KB.fallback.length)];
+        }
+
+        // ── UI ────────────────────────────────────────────────────────────
+        const messages = document.getElementById('messages');
+        const inputEl = document.getElementById('user-input');
+
+        function appendMsg(html, role) {
+            const wrap = document.createElement('div');
+            wrap.className = 'msg ' + role;
+            const avatar = document.createElement('div');
+            avatar.className = 'msg-avatar ' + role;
+            avatar.textContent = role === 'ai' ? '🤖' : '👤';
+            const bubble = document.createElement('div');
+            bubble.className = 'msg-bubble';
+            bubble.innerHTML = html;
+            if (role === 'ai') { wrap.appendChild(avatar); wrap.appendChild(bubble); }
+            else { wrap.appendChild(bubble); wrap.appendChild(avatar); }
+            messages.appendChild(wrap);
+            messages.scrollTop = messages.scrollHeight;
+            return bubble;
+        }
+
+        function showTyping() {
+            const wrap = document.createElement('div');
+            wrap.className = 'msg ai'; wrap.id = 'typing-indicator';
+            wrap.innerHTML = `<div class="msg-avatar ai">🤖</div><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+            messages.appendChild(wrap);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        function hideTyping() {
+            document.getElementById('typing-indicator')?.remove();
+        }
+
+        function sendMessage() {
+            const text = inputEl.value.trim();
+            if (!text) return;
+            inputEl.value = ''; inputEl.style.height = 'auto';
+            appendMsg(text, 'user');
+            showTyping();
+            const delay = 600 + Math.random() * 800;
+            setTimeout(() => {
+                hideTyping();
+                appendMsg(findResponse(text), 'ai');
+            }, delay);
+        }
+
+        function ask(q) {
+            inputEl.value = q;
+            sendMessage();
+        }
+
+        inputEl.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+        });
+        inputEl.addEventListener('input', () => {
+            inputEl.style.height = 'auto';
+            inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+        });
+
+        // Boot greeting
+        setTimeout(() => appendMsg(`Hi! 👋 I'm <strong>ArslanAI</strong> — an AI trained on Arslan Arshad's engineering career. I can answer questions about his experience, skills, projects, and contact details.<br><br>What would you like to know?`, 'ai'), 400);
+    </script>
+</body>
+
+</html>

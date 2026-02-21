@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arslan Arshad | Career Globe</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=DM+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            background: #020817;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            height: 100vh
+        }
+
+        #globe-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 18px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(2, 8, 23, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .logo {
+            font-family: 'DM Mono', monospace;
+            font-size: .85rem;
+            color: #60a5fa;
+            letter-spacing: 3px
+        }
+
+        .nav-hint {
+            font-size: .75rem;
+            color: #334155;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 1px
+        }
+
+        .back-btn {
+            text-decoration: none;
+            font-size: .78rem;
+            color: #64748b;
+            border: 1px solid rgba(255, 255, 255, .08);
+            padding: 6px 16px;
+            border-radius: 50px;
+            transition: all .3s
+        }
+
+        .back-btn:hover {
+            color: #60a5fa;
+            border-color: rgba(96, 165, 250, .3)
+        }
+
+        /* Loading */
+        #loading {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            background: #020817;
+            transition: opacity .8s;
+        }
+
+        #loading.hidden {
+            opacity: 0;
+            pointer-events: none
+        }
+
+        .load-text {
+            font-family: 'DM Mono', monospace;
+            font-size: .8rem;
+            color: #334155;
+            letter-spacing: 3px;
+            margin-top: 16px
+        }
+
+        .load-bar {
+            width: 200px;
+            height: 2px;
+            background: #0f172a;
+            border-radius: 2px;
+            margin-top: 12px;
+            overflow: hidden
+        }
+
+        .load-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            width: 0%;
+            transition: width .4s
+        }
+
+        /* Info panel */
+        #info-panel {
+            position: fixed;
+            right: 48px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 300px;
+            z-index: 50
+        }
+
+        .loc-card {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 16px;
+            padding: 24px;
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all .4s ease;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        .loc-card.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto
+        }
+
+        .loc-flag {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            display: block
+        }
+
+        .loc-city {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px
+        }
+
+        .loc-country {
+            font-size: .8rem;
+            color: #64748b;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px
+        }
+
+        .loc-roles {
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .role-item {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, .06)
+        }
+
+        .role-co {
+            font-size: .88rem;
+            font-weight: 600
+        }
+
+        .role-title {
+            font-size: .72rem;
+            color: #64748b;
+            margin-top: 2px
+        }
+
+        .role-period {
+            font-size: .65rem;
+            font-family: 'DM Mono', monospace;
+            color: #334155;
+            margin-top: 6px
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #334155;
+            font-size: 1.2rem;
+            transition: color .2s
+        }
+
+        .close-btn:hover {
+            color: #94a3b8
+        }
+
+        /* Stats */
+        .stats {
+            position: fixed;
+            left: 48px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 50
+        }
+
+        .stat-item .stat-n {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'DM Mono', monospace
+        }
+
+        .stat-item .stat-l {
+            font-size: .65rem;
+            color: #334155;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 2px
+        }
+
+        /* Legend */
+        .legend {
+            position: fixed;
+            left: 48px;
+            bottom: 48px;
+            z-index: 50
+        }
+
+        .legend h4 {
+            font-size: .65rem;
+            color: #334155;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-family: 'DM Mono', monospace
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: .78rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: color .2s
+        }
+
+        .legend-item:hover {
+            color: #e2e8f0
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            box-shadow: 0 0 6px currentColor
+        }
+
+        .drag-hint {
+            position: fixed;
+            bottom: 48px;
+            right: 48px;
+            font-size: .68rem;
+            color: #334155;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            z-index: 50
+        }
+
+        @media(max-width:640px) {
+            nav {
+                padding: 12px 16px
+            }
+
+            .stats,
+            .legend {
+                display: none
+            }
+
+            #info-panel {
+                left: 16px;
+                right: 16px;
+                width: auto
+            }
+
+            .drag-hint {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="globe-canvas"></canvas>
+
+    <!-- Loading -->
+    <div id="loading">
+        <div style="font-size:1.5rem">🌍</div>
+        <div class="load-text">LOADING WORLD MAP</div>
+        <div class="load-bar">
+            <div class="load-fill" id="load-fill"></div>
+        </div>
+    </div>
+
+    <nav>
+        <div class="logo">AA.GLOBE</div>
+        <div class="nav-hint">drag to rotate · click pins</div>
+        <a href="lab.html" class="back-btn">← lab</a>
+    </nav>
+
+    <div id="info-panel"></div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-n" style="color:#60a5fa">8+</div>
+            <div class="stat-l">Years Exp.</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-n" style="color:#34d399">3</div>
+            <div class="stat-l">Countries</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-n" style="color:#f472b6">6+</div>
+            <div class="stat-l">Companies</div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <h4>Career Locations</h4>
+        <div class="legend-item" onclick="focusLocation('dubai')">
+            <div class="legend-dot" style="color:#f59e0b;background:#f59e0b"></div>Dubai, UAE
+        </div>
+        <div class="legend-item" onclick="focusLocation('lahore')">
+            <div class="legend-dot" style="color:#60a5fa;background:#60a5fa"></div>Lahore, Pakistan
+        </div>
+        <div class="legend-item" onclick="focusLocation('islamabad')">
+            <div class="legend-dot" style="color:#34d399;background:#34d399"></div>Islamabad, Pakistan
+        </div>
+        <div class="legend-item" onclick="focusLocation('philly')">
+            <div class="legend-dot" style="color:#f472b6;background:#f472b6"></div>Philadelphia, USA
+        </div>
+    </div>
+
+    <div class="drag-hint">drag to rotate · click pins</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    <script>
+        // ── CAREER LOCATIONS ─────────────────────────────────────────
+        const locations = [
+            {
+                id: 'dubai', name: 'Dubai', country: 'United Arab Emirates 🇦🇪', flag: '🇦🇪',
+                lat: 25.2, lon: 55.27, color: 0xf59e0b, hexStr: '#f59e0b',
+                roles: [{ co: 'HungerStation · Delivery Hero', title: 'Senior Software Engineer', period: 'Oct 2023 → Present', color: '#f59e0b' }]
+            },
+            {
+                id: 'lahore', name: 'Lahore', country: 'Pakistan 🇵🇰', flag: '🇵🇰',
+                lat: 31.55, lon: 74.35, color: 0x60a5fa, hexStr: '#60a5fa',
+                roles: [
+                    { co: 'Careem · Uber', title: 'Sr. Software Engineer I', period: 'Apr 2022 → Sep 2023', color: '#60a5fa' },
+                    { co: 'Brainyloft', title: 'Software Engineer', period: 'Jul 2017 → Sep 2018', color: '#818cf8' }
+                ]
+            },
+            {
+                id: 'islamabad', name: 'Islamabad', country: 'Pakistan 🇵🇰', flag: '🇵🇰',
+                lat: 33.72, lon: 73.06, color: 0x34d399, hexStr: '#34d399',
+                roles: [{ co: 'LearnOBots', title: 'Lead Software Engineer', period: 'Oct 2018 → Mar 2022', color: '#34d399' }]
+            },
+            {
+                id: 'philly', name: 'Philadelphia', country: 'United States 🇺🇸', flag: '🇺🇸',
+                lat: 39.95, lon: -75.17, color: 0xf472b6, hexStr: '#f472b6',
+                roles: [{ co: 'Brainyloft / BizProfit', title: 'Full Stack Developer', period: 'Aug 2017 → Sep 2018', color: '#f472b6' }]
+            },
+        ];
+
+        // ── CARDS ─────────────────────────────────────────────────────
+        const panel = document.getElementById('info-panel');
+        locations.forEach(loc => {
+            const card = document.createElement('div');
+            card.className = 'loc-card'; card.id = 'card-' + loc.id;
+            card.innerHTML = `
+        <button class="close-btn" onclick="closeCard()">✕</button>
+        <span class="loc-flag">${loc.flag}</span>
+        <div class="loc-city">${loc.name}</div>
+        <div class="loc-country">${loc.country}</div>
+        <div class="loc-roles">${loc.roles.map(r => `
+            <div class="role-item" style="border-left:3px solid ${r.color}">
+                <div class="role-co" style="color:${r.color}">${r.co}</div>
+                <div class="role-title">${r.title}</div>
+                <div class="role-period">${r.period}</div>
+            </div>`).join('')}
+        </div>`;
+            panel.appendChild(card);
+        });
+        function openCard(id) { document.querySelectorAll('.loc-card').forEach(c => c.classList.remove('active')); document.getElementById('card-' + id)?.classList.add('active'); }
+        function closeCard() { document.querySelectorAll('.loc-card').forEach(c => c.classList.remove('active')); }
+
+        // ── THREE.JS SETUP ────────────────────────────────────────────
+        const canvas = document.getElementById('globe-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(innerWidth, innerHeight);
+        renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 1000);
+        camera.position.z = 2.8;
+
+        // Progress
+        let loadFill = document.getElementById('load-fill');
+        function setProgress(p) { loadFill.style.width = p + '%'; }
+
+        // ── DRAW WORLD MAP ON CANVAS ──────────────────────────────────
+        function buildEarthTexture(worldData) {
+            const W = 2048, H = 1024;
+            const off = document.createElement('canvas');
+            off.width = W; off.height = H;
+            const oc = off.getContext('2d');
+
+            // Ocean gradient
+            const ocean = oc.createLinearGradient(0, 0, 0, H);
+            ocean.addColorStop(0, '#0c2461');
+            ocean.addColorStop(0.5, '#1e3a8a');
+            ocean.addColorStop(1, '#0c2461');
+            oc.fillStyle = ocean;
+            oc.fillRect(0, 0, W, H);
+
+            // D3 equirectangular projection sized to canvas
+            const projection = d3.geoEquirectangular()
+                .scale(W / (2 * Math.PI))
+                .translate([W / 2, H / 2]);
+            const path = d3.geoPath(projection, oc);
+
+            // Grid lines (graticule)
+            const graticule = d3.geoGraticule()();
+            oc.beginPath();
+            path(graticule);
+            oc.strokeStyle = 'rgba(255,255,255,0.04)';
+            oc.lineWidth = 0.5;
+            oc.stroke();
+
+            // Land masses
+            const countries = topojson.feature(worldData, worldData.objects.countries);
+            oc.beginPath();
+            path(countries);
+            oc.fillStyle = '#1e4d20';
+            oc.fill();
+            oc.strokeStyle = '#2d6b30';
+            oc.lineWidth = 0.8;
+            oc.stroke();
+
+            // Country borders
+            const borders = topojson.mesh(worldData, worldData.objects.countries, (a, b) => a !== b);
+            oc.beginPath();
+            path(borders);
+            oc.strokeStyle = 'rgba(80,160,80,0.4)';
+            oc.lineWidth = 0.5;
+            oc.stroke();
+
+            return new THREE.CanvasTexture(off);
+        }
+
+        // ── LOAD DATA → BUILD GLOBE ───────────────────────────────────
+        setProgress(10);
+        fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+            .then(r => { setProgress(50); return r.json(); })
+            .then(worldData => {
+                setProgress(80);
+                const earthTex = buildEarthTexture(worldData);
+                setProgress(95);
+
+                // Atmosphere glow
+                const atmo = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.06, 64, 64),
+                    new THREE.MeshBasicMaterial({ color: 0x1d4ed8, transparent: true, opacity: 0.1, side: THREE.BackSide })
+                );
+                scene.add(atmo);
+
+                // Globe
+                const globeMat = new THREE.MeshPhongMaterial({
+                    map: earthTex,
+                    shininess: 8,
+                    specular: new THREE.Color(0x1e3a8a),
+                });
+                const globe = new THREE.Mesh(new THREE.SphereGeometry(1, 64, 64), globeMat);
+                scene.add(globe);
+
+                // Faint wireframe overlay
+                const wireOver = new THREE.Mesh(
+                    new THREE.SphereGeometry(1.002, 32, 32),
+                    new THREE.MeshBasicMaterial({ color: 0x1e40af, wireframe: true, transparent: true, opacity: 0.04 })
+                );
+                scene.add(wireOver);
+
+                // Background stars
+                const pts = new Float32Array(6000);
+                for (let i = 0; i < 6000; i++) pts[i] = (Math.random() - 0.5) * 10;
+                const pGeo = new THREE.BufferGeometry();
+                pGeo.setAttribute('position', new THREE.BufferAttribute(pts, 3));
+                scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.01, color: 0x94a3b8, transparent: true, opacity: 0.5 })));
+
+                // Lights
+                scene.add(new THREE.AmbientLight(0x8fafd4, 1.5));
+                const sun = new THREE.DirectionalLight(0xffffff, 2);
+                sun.position.set(3, 1, 2); scene.add(sun);
+
+                // ── PINS ──────────────────────────────────────────────────
+                function latLonTo3D(lat, lon, r = 1.01) {
+                    const phi = (90 - lat) * Math.PI / 180;
+                    const theta = (lon + 180) * Math.PI / 180;
+                    return new THREE.Vector3(
+                        -r * Math.sin(phi) * Math.cos(theta),
+                        r * Math.cos(phi),
+                        r * Math.sin(phi) * Math.sin(theta)
+                    );
+                }
+
+                const pinGroup = new THREE.Group();
+                scene.add(pinGroup);
+                globe.add(pinGroup); // pins follow globe rotation
+
+                const clickTargets = [];
+                locations.forEach(loc => {
+                    const pos = latLonTo3D(loc.lat, loc.lon);
+                    // Glow
+                    const glow = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.028, 12, 12),
+                        new THREE.MeshBasicMaterial({ color: loc.color, transparent: true, opacity: 0.3 })
+                    );
+                    glow.position.copy(pos); pinGroup.add(glow);
+                    // Dot
+                    const dot = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.014, 12, 12),
+                        new THREE.MeshBasicMaterial({ color: loc.color })
+                    );
+                    dot.position.copy(pos);
+                    dot.userData = { id: loc.id, glow };
+                    pinGroup.add(dot);
+                    clickTargets.push(dot);
+                    // Ring
+                    const ring = new THREE.Mesh(
+                        new THREE.RingGeometry(0.022, 0.028, 32),
+                        new THREE.MeshBasicMaterial({ color: loc.color, side: THREE.DoubleSide, transparent: true, opacity: 0.6 })
+                    );
+                    ring.position.copy(pos);
+                    ring.lookAt(new THREE.Vector3(0, 0, 0));
+                    pinGroup.add(ring);
+                });
+
+                // ── DRAG ─────────────────────────────────────────────────
+                let dragging = false, prev = { x: 0, y: 0 }, velX = 0, velY = 0;
+                let rotX = 0.3, rotY = 0;
+                canvas.addEventListener('mousedown', e => { dragging = true; prev = { x: e.clientX, y: e.clientY }; velX = velY = 0; });
+                window.addEventListener('mouseup', () => dragging = false);
+                window.addEventListener('mousemove', e => {
+                    if (dragging) {
+                        velY = (e.clientX - prev.x) * 0.005; velX = (e.clientY - prev.y) * 0.005;
+                        rotY += velY; rotX += velX; prev = { x: e.clientX, y: e.clientY };
+                    }
+                });
+                // Touch
+                let prevTouch = null;
+                canvas.addEventListener('touchstart', e => { prevTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY }; velX = velY = 0; }, { passive: true });
+                canvas.addEventListener('touchmove', e => {
+                    if (!prevTouch) return;
+                    velY = (e.touches[0].clientX - prevTouch.x) * 0.005;
+                    velX = (e.touches[0].clientY - prevTouch.y) * 0.005;
+                    rotY += velY; rotX += velX;
+                    prevTouch = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                }, { passive: true });
+
+                // ── CLICK/PIN DETECT ───────────────────────────────────────
+                const ray = new THREE.Raycaster(), mouse = new THREE.Vector2();
+                canvas.addEventListener('click', e => {
+                    mouse.x = (e.clientX / innerWidth) * 2 - 1;
+                    mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+                    ray.setFromCamera(mouse, camera);
+                    const hits = ray.intersectObjects(clickTargets);
+                    if (hits.length) openCard(hits[0].object.userData.id);
+                    else closeCard();
+                });
+
+                // Focus from legend clicks
+                window.focusLocation = function (id) {
+                    openCard(id);
+                    const loc = locations.find(l => l.id === id);
+                    if (!loc) return;
+                    // Tween to face the location
+                    const phi = (90 - loc.lat) * Math.PI / 180;
+                    const theta = -(loc.lon + 180) * Math.PI / 180;
+                    rotX = phi - Math.PI / 2; rotY = theta;
+                };
+
+                // ── ANIMATE ───────────────────────────────────────────────
+                const clock = new THREE.Clock();
+                let glowMeshes = clickTargets.map(d => d.userData.glow);
+
+                (function animate() {
+                    requestAnimationFrame(animate);
+                    const t = clock.getElapsedTime();
+                    if (!dragging) { velX *= 0.95; velY *= 0.95; rotX += velX; rotY += velY; rotY += 0.0008; }
+                    globe.rotation.x = rotX; globe.rotation.y = rotY;
+                    // Pulse glow
+                    glowMeshes.forEach((g, i) => { g.material.opacity = 0.2 + 0.2 * Math.sin(t * 2 + i * 1.6); });
+                    renderer.render(scene, camera);
+                })();
+
+                // Done
+                setProgress(100);
+                setTimeout(() => document.getElementById('loading').classList.add('hidden'), 400);
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('load-fill').style.background = '#ef4444';
+                document.querySelector('.load-text').textContent = 'NETWORK ERROR — RELOAD TO RETRY';
+            });
+
+        // Lights (ambient, before globe loads)
+        scene.add(new THREE.AmbientLight(0x334155, 1));
+
+        window.addEventListener('resize', () => {
+            camera.aspect = innerWidth / innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(innerWidth, innerHeight);
+        });
+    </script>
+</body>
+
+</html>
