@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="M Arslan Arshad — Senior Software Engineer specializing in Go, microservices and distributed backend systems. Currently at HungerStation (Delivery Hero), Dubai.">
     <meta name="author" content="Arslan Arshad">
-    <meta name="theme-color" content="#6366f1">
-    <title>Arslan Arshad | Senior Software Engineer</title>
+    <meta name="theme-color" content="#4f46e5">
+    <title>Arslan Arshad — Senior Software Engineer</title>
 
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Arslan Arshad | Senior Software Engineer">
+    <meta property="og:title" content="Arslan Arshad — Senior Software Engineer">
     <meta property="og:description" content="Backend engineer building scalable microservices in Go, Java & more. Currently at HungerStation (Delivery Hero), Dubai.">
     <meta property="og:url" content="https://arslan77.github.io/">
     <meta name="twitter:card" content="summary">
 
     <!-- Favicon (inline SVG) -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236366f1'/%3E%3Ctext x='50' y='70' font-size='60' font-family='monospace' font-weight='bold' text-anchor='middle' fill='white'%3EA%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%234f46e5'/%3E%3Ctext x='50' y='71' font-size='62' font-family='Georgia, serif' font-weight='bold' text-anchor='middle' fill='white'%3EA%3C/text%3E%3C/svg%3E">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,386 +24,330 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="stylesv2.css">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
-        <div class="gradient-bg"></div>
-        <canvas id="particles"></canvas>
-    </div>
+    <a href="#main" class="skip-link">Skip to content</a>
 
     <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav-content">
-            <a href="#home" class="nav-logo" aria-label="Arslan — home">
-                <span class="logo-bracket">&lt;</span>
-                <span class="logo-text">Arslan</span>
-                <span class="logo-bracket">/&gt;</span>
+    <header class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#hero" class="brand" aria-label="Arslan Arshad — home">
+                <span class="brand-mark">AA</span>
+                <span class="brand-name">Arslan Arshad</span>
             </a>
-            <div class="nav-links" id="navLinks">
-                <a href="#home" class="nav-link active">Home</a>
+
+            <nav class="nav-links" id="navLinks" aria-label="Primary">
                 <a href="#about" class="nav-link">About</a>
                 <a href="#experience" class="nav-link">Experience</a>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#contact" class="nav-link">Contact</a>
-            </div>
+                <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf" class="nav-resume">Resume</a>
+            </nav>
+
             <div class="nav-actions">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <button class="icon-btn" id="themeToggle" aria-label="Toggle dark mode">
                     <i class="fas fa-moon"></i>
                 </button>
-                <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+                <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <div class="hero-badge">
-                <i class="fas fa-code"></i> Senior Software Engineer
-            </div>
-            <h1 class="hero-title">
-                <span class="gradient-text">Hi, I'm Arslan</span>
-            </h1>
-            <p class="hero-subtitle">
-                Building scalable backend systems & microservices<br>
-                <span class="typed-text"></span><span class="cursor">|</span>
-            </p>
-            <div class="hero-stats">
-                <div class="stat">
-                    <div class="stat-number" data-target="8">0</div>
-                    <div class="stat-label">Years Experience</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" data-target="50">0</div>
-                    <div class="stat-label">Partners Integrated</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" data-target="6">0</div>
-                    <div class="stat-label">Companies</div>
-                </div>
-            </div>
-            <div class="hero-cta">
-                <a href="#contact" class="btn btn-primary">
-                    <span>Get in Touch</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf" class="btn btn-secondary">
-                    <i class="fas fa-download"></i>
-                    <span>Resume</span>
-                </a>
-            </div>
-            <div class="social-links">
-                <a href="https://github.com/arslan77" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
-                    <i class="fab fa-github"></i>
-                </a>
-                <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
-                    <i class="fab fa-linkedin"></i>
-                </a>
-                <a href="mailto:arslanarshad07@gmail.com" class="social-link" aria-label="Email">
-                    <i class="fas fa-envelope"></i>
-                </a>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <div class="mouse">
-                <div class="wheel"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// About Me</span>
-                <h2 class="section-title">Who I Am</h2>
-            </div>
-            <div class="about-grid">
-                <div class="about-card" data-aos="fade-up">
-                    <div class="card-icon">
-                        <i class="fas fa-briefcase"></i>
-                    </div>
-                    <h3>Current Role</h3>
-                    <p>Senior Software Engineer at <strong>HungerStation (Delivery Hero)</strong></p>
-                    <p class="text-muted">Dubai, UAE 🇦🇪</p>
-                </div>
-                <div class="about-card" data-aos="fade-up">
-                    <div class="card-icon">
-                        <i class="fas fa-code-branch"></i>
-                    </div>
-                    <h3>Specialization</h3>
-                    <p>Backend Development, Microservices, Distributed Systems</p>
-                    <p class="text-muted">Go • Java • PHP • Ruby • Python</p>
-                </div>
-                <div class="about-card" data-aos="fade-up">
-                    <div class="card-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3>Education</h3>
-                    <p>MS in Computer Science (IIS)</p>
-                    <p class="text-muted">NUST SEECS • CGPA: 3.35/4.0</p>
-                </div>
-                <div class="about-card" data-aos="fade-up">
-                    <div class="card-icon">
-                        <i class="fas fa-newspaper"></i>
-                    </div>
-                    <h3>Research</h3>
-                    <p>Published in Journal of Economy and Technology</p>
-                    <p class="text-muted">Poverty Mapping via Satellite Imagery</p>
-                </div>
-            </div>
-            <div class="about-description">
-                <p>
-                    Contributing to the <strong>Integration Squad</strong> at HungerStation, where I build GoLang microservices
-                    for vendor integrations across 50+ partners. I led the <strong>Scheduled Orders initiative</strong>,
-                    built a <strong>Logistics Compliance Tool</strong> integrating government APIs, and developed the
-                    <strong>Item Replacement feature</strong>.
+    <main id="main">
+        <!-- Hero -->
+        <section id="hero" class="hero">
+            <div class="container hero-inner">
+                <p class="hero-eyebrow">
+                    <span class="status-dot"></span> Open to impactful backend roles
                 </p>
-                <p>
-                    I'm passionate about building scalable systems and leveraging AI tools like
-                    <strong>Claude AI</strong>, <strong>GitHub Copilot</strong>, and <strong>Cursor AI</strong>
-                    to enhance productivity and code quality.
+                <h1 class="hero-title">Arslan Arshad</h1>
+                <p class="hero-role">Senior Software Engineer · Backend &amp; Distributed Systems</p>
+                <p class="hero-lead">
+                    I design and build scalable microservices that power products used across the
+                    Middle East — currently on the Integration Squad at
+                    <strong>HungerStation&nbsp;(Delivery&nbsp;Hero)</strong> in Dubai.
                 </p>
-            </div>
-        </div>
-    </section>
 
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// Technical Expertise</span>
-                <h2 class="section-title">Skills & Technologies</h2>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-category" data-aos="fade-up">
-                    <h3><i class="fas fa-code"></i> Languages</h3>
-                    <div class="skill-items">
-                        <div class="skill-item" data-level="90">
-                            <span class="skill-name">Go (Golang)</span>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 90%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item" data-level="85">
-                            <span class="skill-name">Java</span>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item" data-level="85">
-                            <span class="skill-name">PHP</span>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 85%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item" data-level="80">
-                            <span class="skill-name">Ruby</span>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%"></div>
-                            </div>
-                        </div>
-                        <div class="skill-item" data-level="80">
-                            <span class="skill-name">Python</span>
-                            <div class="skill-bar">
-                                <div class="skill-progress" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="hero-cta">
+                    <a href="#contact" class="btn btn-primary">
+                        Get in touch <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf" class="btn btn-ghost">
+                        <i class="fas fa-download"></i> Download résumé
+                    </a>
                 </div>
 
-                <div class="skill-category" data-aos="fade-up">
-                    <h3><i class="fas fa-server"></i> Backend & Cloud</h3>
-                    <div class="tech-badges">
-                        <span class="tech-badge">Spring Boot</span>
-                        <span class="tech-badge">Laravel</span>
-                        <span class="tech-badge">Ruby on Rails</span>
-                        <span class="tech-badge">Express.js</span>
-                        <span class="tech-badge">Django</span>
-                        <span class="tech-badge">Docker</span>
-                        <span class="tech-badge">Kubernetes</span>
-                        <span class="tech-badge">GKE</span>
-                        <span class="tech-badge">AWS</span>
-                        <span class="tech-badge">Google Cloud</span>
-                    </div>
-                </div>
-
-                <div class="skill-category" data-aos="fade-up">
-                    <h3><i class="fas fa-database"></i> Databases</h3>
-                    <div class="tech-badges">
-                        <span class="tech-badge">PostgreSQL</span>
-                        <span class="tech-badge">MySQL</span>
-                        <span class="tech-badge">MongoDB</span>
-                        <span class="tech-badge">Redis</span>
-                        <span class="tech-badge">Elasticsearch</span>
-                    </div>
-                </div>
-
-                <div class="skill-category" data-aos="fade-up">
-                    <h3><i class="fas fa-robot"></i> AI & Tools</h3>
-                    <div class="tech-badges">
-                        <span class="tech-badge">Claude AI</span>
-                        <span class="tech-badge">GitHub Copilot</span>
-                        <span class="tech-badge">Cursor AI</span>
-                        <span class="tech-badge">Custom Agents</span>
-                        <span class="tech-badge">Prompt Engineering</span>
-                    </div>
+                <div class="hero-meta">
+                    <a href="https://github.com/arslan77" target="_blank" rel="noopener" class="meta-link" aria-label="GitHub">
+                        <i class="fab fa-github"></i> github.com/arslan77
+                    </a>
+                    <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" class="meta-link" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin"></i> in/iamarslan
+                    </a>
+                    <span class="meta-link"><i class="fas fa-location-dot"></i> Dubai, UAE</span>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Experience Timeline -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// Career Journey</span>
-                <h2 class="section-title">Professional Experience</h2>
+        <!-- Stats strip -->
+        <section class="stats" aria-label="At a glance">
+            <div class="container stats-grid">
+                <div class="stat">
+                    <span class="stat-number" data-target="8" data-suffix="+">8</span>
+                    <span class="stat-label">Years of experience</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="50" data-suffix="+">50</span>
+                    <span class="stat-label">Partner integrations</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="3" data-suffix="">3</span>
+                    <span class="stat-label">Industry-leading teams</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="5" data-suffix="+">5</span>
+                    <span class="stat-label">Languages in production</span>
+                </div>
             </div>
+        </section>
 
-            <div class="timeline">
-                <!-- HungerStation -->
-                <div class="timeline-item" data-aos="fade-up">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
+        <!-- About -->
+        <section id="about" class="section">
+            <div class="container">
+                <header class="section-head">
+                    <span class="section-kicker">About</span>
+                    <h2 class="section-title">Backend engineer focused on systems that scale</h2>
+                </header>
+
+                <div class="about-layout">
+                    <div class="about-text">
+                        <p>
+                            I'm a senior backend engineer with eight years of experience building
+                            reliable, high-throughput services for marketplaces and logistics platforms.
+                            On the Integration Squad at <strong>HungerStation (Delivery Hero)</strong> I build
+                            Go microservices that connect 50+ vendor partners.
+                        </p>
+                        <p>
+                            I led the <strong>Scheduled Orders initiative</strong>, built a
+                            <strong>Logistics Compliance Tool</strong> integrating government APIs for rider
+                            verification, and shipped the <strong>Item Replacement</strong> feature with
+                            real-time inventory checks. I care about clean architecture, observability, and
+                            using AI tooling to ship faster without compromising quality.
+                        </p>
+                    </div>
+
+                    <ul class="about-facts">
+                        <li>
+                            <i class="fas fa-briefcase"></i>
                             <div>
-                                <h3>Senior Software Engineer (Backend)</h3>
-                                <h4>HungerStation (Delivery Hero)</h4>
+                                <strong>Senior Software Engineer</strong>
+                                <span>HungerStation (Delivery Hero) — Dubai</span>
                             </div>
-                            <div class="timeline-date">
-                                <i class="far fa-calendar"></i> Oct 2023 - Present
-                            </div>
-                        </div>
-                        <div class="timeline-content">
-                            <ul class="achievements">
-                                <li>Led <strong>Scheduled Orders initiative</strong> with gRPC, complex Saudi scheduling (Ramadan/Eid)</li>
-                                <li>Built <strong>Logistics Compliance Tool</strong> (Athr/Yakeen government APIs) for rider verification</li>
-                                <li>Developed <strong>Item Replacement feature</strong> with real-time inventory checks</li>
-                                <li>Contributing to Integration Squad building GoLang microservices across 50+ partners</li>
-                            </ul>
-                            <div class="tech-stack-inline">
-                                <span>Go</span><span>gRPC</span><span>GKE</span><span>Pub/Sub</span><span>Redis</span><span>Postgres</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Careem -->
-                <div class="timeline-item" data-aos="fade-up">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
+                        </li>
+                        <li>
+                            <i class="fas fa-graduation-cap"></i>
                             <div>
-                                <h3>Sr. Software Engineer I</h3>
-                                <h4>Careem (Uber Subsidiary)</h4>
+                                <strong>MS, Computer Science</strong>
+                                <span>NUST SEECS — CGPA 3.35 / 4.0</span>
                             </div>
-                            <div class="timeline-date">
-                                <i class="far fa-calendar"></i> Apr 2022 - Sep 2023
-                            </div>
-                        </div>
-                        <div class="timeline-content">
-                            <ul class="achievements">
-                                <li><strong>Captain Acquisition:</strong> Driver onboarding with Tawseel compliance</li>
-                                <li><strong>Captain Reward:</strong> Gamified tier system with 2 microservices processing millions of events</li>
-                                <li>Led product initiative for driver retention and engagement</li>
-                            </ul>
-                            <div class="tech-stack-inline">
-                                <span>Spring Boot</span><span>Laravel</span><span>MongoDB</span><span>Redis</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- LearnOBots -->
-                <div class="timeline-item" data-aos="fade-up">
-                    <div class="timeline-marker"></div>
-                    <div class="timeline-card">
-                        <div class="timeline-header">
+                        </li>
+                        <li>
+                            <i class="fas fa-flask"></i>
                             <div>
-                                <h3>Lead Software Engineer</h3>
-                                <h4>LearnOBots</h4>
+                                <strong>Published Researcher</strong>
+                                <span>Poverty mapping via satellite imagery</span>
                             </div>
-                            <div class="timeline-date">
-                                <i class="far fa-calendar"></i> Oct 2018 - Mar 2022
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience -->
+        <section id="experience" class="section section-alt">
+            <div class="container">
+                <header class="section-head">
+                    <span class="section-kicker">Experience</span>
+                    <h2 class="section-title">Where I've made an impact</h2>
+                </header>
+
+                <div class="timeline">
+                    <article class="exp" data-reveal>
+                        <div class="exp-head">
+                            <div>
+                                <h3 class="exp-role">Senior Software Engineer, Backend</h3>
+                                <p class="exp-company">HungerStation (Delivery Hero)</p>
                             </div>
+                            <span class="exp-period">Oct 2023 — Present</span>
                         </div>
-                        <div class="timeline-content">
-                            <ul class="achievements">
-                                <li><strong>LearnOSTEAM:</strong> Built from scratch (50+ schools, 10K+ students) - Phaser/Unity games, Blockly-Arduino</li>
-                                <li><strong>POULTA IoT:</strong> AWS Greengrass, 500+ devices, 4 fleet types</li>
-                                <li>Led team of 3 engineers, 99.9% uptime</li>
-                            </ul>
-                            <div class="tech-stack-inline">
-                                <span>Django</span><span>Kubernetes</span><span>Phaser</span><span>Unity</span><span>AWS</span>
+                        <ul class="exp-points">
+                            <li>Led the <strong>Scheduled Orders</strong> initiative over gRPC, handling complex Saudi scheduling rules (Ramadan / Eid).</li>
+                            <li>Built a <strong>Logistics Compliance Tool</strong> integrating Athr / Yakeen government APIs for rider verification.</li>
+                            <li>Shipped the <strong>Item Replacement</strong> feature with real-time inventory checks.</li>
+                            <li>Maintain GoLang microservices integrating 50+ vendor partners.</li>
+                        </ul>
+                        <div class="exp-tags">
+                            <span>Go</span><span>gRPC</span><span>GKE</span><span>Pub/Sub</span><span>Redis</span><span>PostgreSQL</span>
+                        </div>
+                    </article>
+
+                    <article class="exp" data-reveal>
+                        <div class="exp-head">
+                            <div>
+                                <h3 class="exp-role">Sr. Software Engineer I</h3>
+                                <p class="exp-company">Careem (an Uber company)</p>
                             </div>
+                            <span class="exp-period">Apr 2022 — Sep 2023</span>
+                        </div>
+                        <ul class="exp-points">
+                            <li><strong>Captain Acquisition:</strong> driver onboarding with Tawseel compliance.</li>
+                            <li><strong>Captain Reward:</strong> gamified tier system across 2 microservices processing millions of events.</li>
+                            <li>Drove a product initiative for driver retention and engagement.</li>
+                        </ul>
+                        <div class="exp-tags">
+                            <span>Spring Boot</span><span>Laravel</span><span>MongoDB</span><span>Redis</span>
+                        </div>
+                    </article>
+
+                    <article class="exp" data-reveal>
+                        <div class="exp-head">
+                            <div>
+                                <h3 class="exp-role">Lead Software Engineer</h3>
+                                <p class="exp-company">LearnOBots</p>
+                            </div>
+                            <span class="exp-period">Oct 2018 — Mar 2022</span>
+                        </div>
+                        <ul class="exp-points">
+                            <li><strong>LearnOSTEAM:</strong> built from scratch — 50+ schools, 10K+ students; Phaser / Unity games and Blockly–Arduino.</li>
+                            <li><strong>POULTA IoT:</strong> AWS Greengrass platform managing 500+ devices across 4 fleet types.</li>
+                            <li>Led a team of 3 engineers and sustained 99.9% uptime.</li>
+                        </ul>
+                        <div class="exp-tags">
+                            <span>Django</span><span>Kubernetes</span><span>Phaser</span><span>Unity</span><span>AWS</span>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills -->
+        <section id="skills" class="section">
+            <div class="container">
+                <header class="section-head">
+                    <span class="section-kicker">Skills</span>
+                    <h2 class="section-title">Tools I reach for</h2>
+                </header>
+
+                <div class="skills-grid">
+                    <div class="skill-card" data-reveal>
+                        <h3><i class="fas fa-code"></i> Languages</h3>
+                        <div class="chips">
+                            <span class="chip chip-strong">Go</span>
+                            <span class="chip">Java</span>
+                            <span class="chip">PHP</span>
+                            <span class="chip">Ruby</span>
+                            <span class="chip">Python</span>
+                        </div>
+                    </div>
+                    <div class="skill-card" data-reveal>
+                        <h3><i class="fas fa-server"></i> Backend &amp; Cloud</h3>
+                        <div class="chips">
+                            <span class="chip">Spring Boot</span>
+                            <span class="chip">Laravel</span>
+                            <span class="chip">Rails</span>
+                            <span class="chip">Django</span>
+                            <span class="chip">Docker</span>
+                            <span class="chip">Kubernetes</span>
+                            <span class="chip">GKE</span>
+                            <span class="chip">AWS</span>
+                            <span class="chip">Google Cloud</span>
+                        </div>
+                    </div>
+                    <div class="skill-card" data-reveal>
+                        <h3><i class="fas fa-database"></i> Data &amp; Messaging</h3>
+                        <div class="chips">
+                            <span class="chip">PostgreSQL</span>
+                            <span class="chip">MySQL</span>
+                            <span class="chip">MongoDB</span>
+                            <span class="chip">Redis</span>
+                            <span class="chip">Elasticsearch</span>
+                            <span class="chip">gRPC</span>
+                            <span class="chip">Pub/Sub</span>
+                        </div>
+                    </div>
+                    <div class="skill-card" data-reveal>
+                        <h3><i class="fas fa-robot"></i> AI &amp; Workflow</h3>
+                        <div class="chips">
+                            <span class="chip">Claude AI</span>
+                            <span class="chip">GitHub Copilot</span>
+                            <span class="chip">Cursor</span>
+                            <span class="chip">Custom Agents</span>
+                            <span class="chip">Prompt Engineering</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">// Get In Touch</span>
-                <h2 class="section-title">Let's Connect</h2>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-info">
-                    <h3>Ready to collaborate?</h3>
-                    <p>I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
-
-                    <div class="contact-details">
-                        <a href="mailto:arslanarshad07@gmail.com" class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <span>arslanarshad07@gmail.com</span>
-                        </a>
-                        <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" class="contact-item">
-                            <i class="fab fa-linkedin"></i>
-                            <span>linkedin.com/in/iamarslan</span>
-                        </a>
-                        <a href="https://github.com/arslan77" target="_blank" rel="noopener" class="contact-item">
-                            <i class="fab fa-github"></i>
-                            <span>github.com/arslan77</span>
-                        </a>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Dubai, UAE 🇦🇪</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="contact-cta">
-                    <div class="cta-card">
-                        <i class="fas fa-file-download"></i>
-                        <h4>Download Resume</h4>
-                        <p>Get my detailed CV with complete work history</p>
-                        <a href="https://github.com/arslan77/resume/releases/latest/download/Resume-Arslan-Arshad-Latest.pdf" class="btn btn-primary">
-                            <i class="fas fa-download"></i> Download PDF
+        <!-- Contact -->
+        <section id="contact" class="section section-alt">
+            <div class="container">
+                <div class="contact-card">
+                    <div class="contact-copy">
+                        <span class="section-kicker">Contact</span>
+                        <h2 class="section-title">Let's build something reliable</h2>
+                        <p>
+                            I'm open to discussing backend roles, system design challenges, or
+                            interesting problems. The fastest way to reach me is email.
+                        </p>
+                        <a href="mailto:arslanarshad07@gmail.com" class="btn btn-primary">
+                            <i class="fas fa-envelope"></i> arslanarshad07@gmail.com
                         </a>
                     </div>
+                    <ul class="contact-links">
+                        <li>
+                            <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener">
+                                <i class="fab fa-linkedin"></i>
+                                <span>linkedin.com/in/iamarslan</span>
+                                <i class="fas fa-arrow-up-right-from-square link-out"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/arslan77" target="_blank" rel="noopener">
+                                <i class="fab fa-github"></i>
+                                <span>github.com/arslan77</span>
+                                <i class="fas fa-arrow-up-right-from-square link-out"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <span class="contact-static">
+                                <i class="fas fa-location-dot"></i>
+                                <span>Dubai, United Arab Emirates</span>
+                            </span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
-            <p>&copy; <span id="year">2026</span> Arslan Arshad. Built with <i class="fas fa-heart"></i> and lots of ☕</p>
-            <p class="footer-note">Powered by Claude AI, GitHub Copilot &amp; Cursor AI</p>
+        <div class="container footer-inner">
+            <span class="brand-mark">AA</span>
+            <p>&copy; <span id="year">2026</span> Arslan Arshad. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="https://github.com/arslan77" target="_blank" rel="noopener" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:arslanarshad07@gmail.com" aria-label="Email"><i class="fas fa-envelope"></i></a>
+            </div>
         </div>
     </footer>
 
-    <!-- Back to top -->
     <button class="back-to-top" id="backToTop" aria-label="Back to top">
         <i class="fas fa-arrow-up"></i>
     </button>
