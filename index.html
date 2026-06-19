@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="M Arslan Arshad - Senior Software Engineer | Creative Portfolio">
-    <title>Arslan Arshad | Software Engineer</title>
+    <meta name="description" content="M Arslan Arshad — Senior Software Engineer specializing in Go, microservices and distributed backend systems. Currently at HungerStation (Delivery Hero), Dubai.">
+    <meta name="author" content="Arslan Arshad">
+    <meta name="theme-color" content="#6366f1">
+    <title>Arslan Arshad | Senior Software Engineer</title>
+
+    <!-- Open Graph / Social -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Arslan Arshad | Senior Software Engineer">
+    <meta property="og:description" content="Backend engineer building scalable microservices in Go, Java & more. Currently at HungerStation (Delivery Hero), Dubai.">
+    <meta property="og:url" content="https://arslan77.github.io/">
+    <meta name="twitter:card" content="summary">
+
+    <!-- Favicon (inline SVG) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%236366f1'/%3E%3Ctext x='50' y='70' font-size='60' font-family='monospace' font-weight='bold' text-anchor='middle' fill='white'%3EA%3C/text%3E%3C/svg%3E">
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="stylesv2.css">
@@ -24,21 +38,26 @@
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-content">
-            <div class="nav-logo">
+            <a href="#home" class="nav-logo" aria-label="Arslan — home">
                 <span class="logo-bracket">&lt;</span>
                 <span class="logo-text">Arslan</span>
                 <span class="logo-bracket">/&gt;</span>
-            </div>
-            <div class="nav-links">
+            </a>
+            <div class="nav-links" id="navLinks">
                 <a href="#home" class="nav-link active">Home</a>
                 <a href="#about" class="nav-link">About</a>
                 <a href="#experience" class="nav-link">Experience</a>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
-            <button class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
@@ -80,13 +99,13 @@
                 </a>
             </div>
             <div class="social-links">
-                <a href="https://github.com/arslan77" target="_blank" class="social-link">
+                <a href="https://github.com/arslan77" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a href="https://linkedin.com/in/iamarslan" target="_blank" class="social-link">
+                <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
                     <i class="fab fa-linkedin"></i>
                 </a>
-                <a href="mailto:arslanarshad07@gmail.com" class="social-link">
+                <a href="mailto:arslanarshad07@gmail.com" class="social-link" aria-label="Email">
                     <i class="fas fa-envelope"></i>
                 </a>
             </div>
@@ -106,7 +125,7 @@
                 <h2 class="section-title">Who I Am</h2>
             </div>
             <div class="about-grid">
-                <div class="about-card">
+                <div class="about-card" data-aos="fade-up">
                     <div class="card-icon">
                         <i class="fas fa-briefcase"></i>
                     </div>
@@ -114,7 +133,7 @@
                     <p>Senior Software Engineer at <strong>HungerStation (Delivery Hero)</strong></p>
                     <p class="text-muted">Dubai, UAE 🇦🇪</p>
                 </div>
-                <div class="about-card">
+                <div class="about-card" data-aos="fade-up">
                     <div class="card-icon">
                         <i class="fas fa-code-branch"></i>
                     </div>
@@ -122,7 +141,7 @@
                     <p>Backend Development, Microservices, Distributed Systems</p>
                     <p class="text-muted">Go • Java • PHP • Ruby • Python</p>
                 </div>
-                <div class="about-card">
+                <div class="about-card" data-aos="fade-up">
                     <div class="card-icon">
                         <i class="fas fa-graduation-cap"></i>
                     </div>
@@ -130,7 +149,7 @@
                     <p>MS in Computer Science (IIS)</p>
                     <p class="text-muted">NUST SEECS • CGPA: 3.35/4.0</p>
                 </div>
-                <div class="about-card">
+                <div class="about-card" data-aos="fade-up">
                     <div class="card-icon">
                         <i class="fas fa-newspaper"></i>
                     </div>
@@ -163,7 +182,7 @@
                 <h2 class="section-title">Skills & Technologies</h2>
             </div>
             <div class="skills-grid">
-                <div class="skill-category">
+                <div class="skill-category" data-aos="fade-up">
                     <h3><i class="fas fa-code"></i> Languages</h3>
                     <div class="skill-items">
                         <div class="skill-item" data-level="90">
@@ -199,7 +218,7 @@
                     </div>
                 </div>
 
-                <div class="skill-category">
+                <div class="skill-category" data-aos="fade-up">
                     <h3><i class="fas fa-server"></i> Backend & Cloud</h3>
                     <div class="tech-badges">
                         <span class="tech-badge">Spring Boot</span>
@@ -215,7 +234,7 @@
                     </div>
                 </div>
 
-                <div class="skill-category">
+                <div class="skill-category" data-aos="fade-up">
                     <h3><i class="fas fa-database"></i> Databases</h3>
                     <div class="tech-badges">
                         <span class="tech-badge">PostgreSQL</span>
@@ -226,7 +245,7 @@
                     </div>
                 </div>
 
-                <div class="skill-category">
+                <div class="skill-category" data-aos="fade-up">
                     <h3><i class="fas fa-robot"></i> AI & Tools</h3>
                     <div class="tech-badges">
                         <span class="tech-badge">Claude AI</span>
@@ -348,11 +367,11 @@
                             <i class="fas fa-envelope"></i>
                             <span>arslanarshad07@gmail.com</span>
                         </a>
-                        <a href="https://linkedin.com/in/iamarslan" target="_blank" class="contact-item">
+                        <a href="https://linkedin.com/in/iamarslan" target="_blank" rel="noopener" class="contact-item">
                             <i class="fab fa-linkedin"></i>
                             <span>linkedin.com/in/iamarslan</span>
                         </a>
-                        <a href="https://github.com/arslan77" target="_blank" class="contact-item">
+                        <a href="https://github.com/arslan77" target="_blank" rel="noopener" class="contact-item">
                             <i class="fab fa-github"></i>
                             <span>github.com/arslan77</span>
                         </a>
@@ -379,10 +398,15 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Arslan Arshad. Built with <i class="fas fa-heart"></i> and lots of ☕</p>
-            <p class="footer-note">Powered by Claude AI, GitHub Copilot & Cursor AI</p>
+            <p>&copy; <span id="year">2026</span> Arslan Arshad. Built with <i class="fas fa-heart"></i> and lots of ☕</p>
+            <p class="footer-note">Powered by Claude AI, GitHub Copilot &amp; Cursor AI</p>
         </div>
     </footer>
+
+    <!-- Back to top -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script src="scriptv2.js"></script>
 </body>

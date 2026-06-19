@@ -70,7 +70,7 @@ function animateParticles() {
         particles[i].update();
         particles[i].draw();
 
-        for (let j = i; j < particles.length; j++) {
+        for (let j = i + 1; j < particles.length; j++) {
             const dx = particles[i].x - particles[j].x;
             const dy = particles[i].y - particles[j].y;
             const distance = Math.sqrt(dx * dx + dy * dy);
@@ -91,8 +91,12 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-initParticles();
-animateParticles();
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReducedMotion) {
+    initParticles();
+    animateParticles();
+}
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
@@ -255,29 +259,47 @@ skillBars.forEach(bar => {
     skillObserver.observe(bar);
 });
 
-// Add hover effect to timeline cards
-const timelineCards = document.querySelectorAll('.timeline-card');
+// Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const navLinksContainer = document.getElementById('navLinks');
 
-timelineCards.forEach(card => {
-    card.addEventListener('mouseenter', () => {
-        card.style.transform = 'translateX(10px) scale(1.02)';
+function closeMenu() {
+    navLinksContainer.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.querySelector('i').className = 'fas fa-bars';
+}
+
+if (menuToggle && navLinksContainer) {
+    menuToggle.addEventListener('click', () => {
+        const isOpen = navLinksContainer.classList.toggle('open');
+        menuToggle.setAttribute('aria-expanded', String(isOpen));
+        menuToggle.querySelector('i').className = isOpen ? 'fas fa-times' : 'fas fa-bars';
     });
 
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'translateX(10px)';
+    // Close the menu after tapping a link
+    navLinksContainer.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', closeMenu);
     });
-});
+}
 
-// Parallax effect on scroll
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const parallaxElements = document.querySelectorAll('.gradient-bg');
+// Back to top button visibility + action
+const backToTop = document.getElementById('backToTop');
 
-    parallaxElements.forEach(el => {
-        const speed = 0.5;
-        el.style.transform = `translateY(${scrolled * speed}px)`;
+if (backToTop) {
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-});
+
+    window.addEventListener('scroll', () => {
+        backToTop.classList.toggle('visible', window.scrollY > 600);
+    });
+}
+
+// Keep the footer year current
+const yearEl = document.getElementById('year');
+if (yearEl) {
+    yearEl.textContent = new Date().getFullYear();
+}
 
 console.log('%c👋 Hey there! Nice to see you checking the console!', 'color: #6366f1; font-size: 16px; font-weight: bold;');
 console.log('%cBuilt with ❤️ using Claude AI, GitHub Copilot & Cursor AI', 'color: #0ea5e9; font-size: 12px;');
